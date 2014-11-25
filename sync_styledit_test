@@ -1,0 +1,2 @@
+rsync -vrz --exclude bin/config.php styleditproj/web/ gary@vulcan:/home/gary/public_html/styledit/
+

@@ -1,0 +1,121 @@
+body {background-color: #EEEEEE}
+
+h1 { font-size: 20pt; font-weight: bold; color:#330000}
+
+td.navhead { width: 140px;}
+
+.logintab {border-style: none;}
+
+.logintab td {padding: 10px;}
+
+.formlabel {width: 140px; test-align: right;}
+
+.loginbox {width: 200px;}
+
+.banner {background-color: #AACCCC}
+
+.footer {font-size: 80%}
+
+.signature {padding-left: 3in; }
+
+.mockplayer {font-size: 24pt; color: #006622; }
+
+ul.nobullet { list-style-type: none; }
+
+.hidden {display: none; }
+
+ul.instlist {list-style-type: none; }
+
+ul.instlist li {float:left; width: 180px; }
+
+div.menubar { background-color: #99EEEE; height: 120px;}
+
+ul.menubar {list-style-type: none; }
+
+ul.menubar li {float: left; width: 200px; }
+
+.menubaruser {color:blue; font-size: 80%; }
+
+.paramnamebox {width: 100px; }
+
+.paramvalbox {width: 300px; }
+
+.submitbutton {background-color: #BBCCFF}
+
+.reportnavtd {vertical-align:top; width:150px;}
+
+table.cliptable {padding-left: 30px; border-collapse: collapse;}
+
+table.cliptable tr, table.cliptable td {border: 1px solid blue;}
+
+table.editcliptable {padding-left: 30px;}
+
+table.editusertable {border-collapse: collapse;}
+
+.editusertable, .editusertable tr, .editusertable td {border: 1px solid blue;}
+
+td.reportnav { width: 100px; }
+
+.errormsg {color: red; font-weight: bold; font-size: 120%;}
+
+.notice {color: blue; font-weight: bold; font-size: 120%;}
+
+.flagged {color: red; font-weight: bold; font-style: italic; }
+
+.ui-datepicker {
+	width: 216px;
+	height: auto;
+	margin: 5px auto 0;
+	font: 9pt Arial, sans-serif;
+	-webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .5);
+	-moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .5);
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, .5);
+}
+
+.ui-datepicker a {
+	text-decoration: none;
+}
+
+.ui-datepicker table {
+	width: 100%;
+}
+
+.ui-datepicker-prev, .ui-datepicker-next {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	color: green;
+	text-align: center;
+	cursor: pointer;
+}
+
+.ui-datepicker-prev {
+	float: left;
+	background-position: center -30px;
+}
+.ui-datepicker-next {
+	float: right;
+	background-position: center 0px;
+}
+
+.ui-datepicker-title {
+	text-align: center;
+	font-weight: bold;
+}
+
+.ui-datepicker-calendar .ui-state-active {
+	color: #e0e0e0;
+	background: #002030;
+	text-shadow: 0px 1px 0px #4d7a85;
+	margin: -1px;
+}
+
+tr.datepicker {
+	height:200px;	
+}
+
+tr.datepicker > td {
+	width:250px;
+	height:200px;
+	vertical-align:top;
+}
