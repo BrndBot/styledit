@@ -42,6 +42,7 @@ function buildFromForm () {
 			break;
 	}
 	$styleatt = "type=" . '"' . $styletype . '"' ;
+	$styleatt .= " name=" . '"' . $_POST["stylename"] . '"';
 	return wrapContentWithAtts ($content, "style", $styleatt);
 }
 
@@ -83,6 +84,29 @@ function buildImageContent () {
 	$content = wrapcontent ($_POST["imagepath"], "path");
 	return wrapContent ($content, "image");	
 }
+
+/* Write the XML. This will fail if the file already exists. */
+function saveXML ($xml) {
+	try {
+		$filename = $_POST["stylename"] . ".xml";
+		if (file_exists ($filename)) {
+			echo ("<p>A file called " . $filename . " already exists.</p>");
+			return false;
+		}
+		$xmlfile = fopen ("createdstyles/" . $filename, "x");
+		if (!$xmlfile) {
+			echo ("<p>Could not create the file.</p>");
+			return false;
+		}
+		fwrite ($xmlfile, $xml);
+		fclose ($xmlfile);
+		return true;
+	}
+	catch (Exception $e) {
+		echo ("<p>Could not save the file.</p>");
+		return false;
+	}
+}
 ?>
 
 <html lang="en">
@@ -92,10 +116,15 @@ function buildImageContent () {
 	
 </head>
 <body>
-<p>Form has been submitted</p>
-<pre class="xmltext">
+
+
 <?php
-	echo (escapeTags(buildFromForm()));
+	$xml = buildFromForm ();
+	if (saveXML ($xml)) {
+		echo ('<pre class="xmltext">\n');
+		echo ("<p>Form has been submitted</p>");
+		echo (escapeTags($xml));
+	}
 ?>
 </pre>
 <p><a href="enter.php">Enter another style</p>

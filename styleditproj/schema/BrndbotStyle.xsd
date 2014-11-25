@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.brndbot.com/schema/BrndbotStyle" 
+		xmlns="http://www.brndbot.com/schema/BrndbotStyle" 
+		elementFormDefault="qualified">
+
+
+	<xs:element name="style">
+		<xs:complexType>
+			<xs:choice minOccurs="1" maxOccurs="unbounded">
+				<xs:element name="text" type="textElement"/>
+				<xs:element name="svg" type="svgElement"/>
+				<xs:element name="image" type="imageElement"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="textElement">
+		<xs:sequence>
+			<xs:element name="textContent" minOccurs="1"/>
+			<xs:element name="bold" minOccurs="0"/>
+			<xs:element name="italic" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="svgElement">
+		<xs:sequence>
+			<xs:element name="svg" minOccurs="1"/>
+			<xs:element name="param" type="svgParam" minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="imageElement">
+		<xs:sequence>
+			<xs:element name="image" minOccurs="1">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="svgParam">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="name" type="xs:string"/>
+				<xs:attribute name="value" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+</xs:schema>
