@@ -1,5 +1,9 @@
 <?php
-
+/*
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+*/
 error_reporting(0);
 
 /* Produce an empty tag */

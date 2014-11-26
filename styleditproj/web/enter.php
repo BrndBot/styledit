@@ -1,7 +1,9 @@
 <?php
 /*	enter.php
 	
-
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
 */
 /*
 require_once('bin/config.php');
@@ -11,12 +13,10 @@ require_once('bin/globalconstants.php');
 
 header("Content-type: text/html; charset=utf-8");
 
-/*
 session_start();
 include('bin/sessioncheck.php');
 if (!sessioncheck())
 	return;
-*/
 
 ?>
 
