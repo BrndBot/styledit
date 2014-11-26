@@ -1,0 +1,1 @@
+rsync -vrz  --exclude bin/config.php styleditproj/web/  ec2-user@brndbotprovider:/home/ec2-user/styledit/
