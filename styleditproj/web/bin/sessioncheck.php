@@ -19,6 +19,7 @@ function sessioncheck () {
 		return NULL;
 	}
 	else {
+		Organization::organizations = $_SESSION['organizations'];
 		return true;
 	}
 }

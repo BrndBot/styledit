@@ -18,15 +18,9 @@ td.navhead { width: 140px;}
 
 .signature {padding-left: 3in; }
 
-.mockplayer {font-size: 24pt; color: #006622; }
-
 ul.nobullet { list-style-type: none; }
 
 .hidden {display: none; }
-
-ul.instlist {list-style-type: none; }
-
-ul.instlist li {float:left; width: 180px; }
 
 div.menubar { background-color: #99EEEE; height: 120px;}
 
@@ -43,14 +37,6 @@ ul.menubar li {float: left; width: 200px; }
 .submitbutton {background-color: #BBCCFF}
 
 .reportnavtd {vertical-align:top; width:150px;}
-
-table.cliptable {padding-left: 30px; border-collapse: collapse;}
-
-table.cliptable tr, table.cliptable td {border: 1px solid blue;}
-
-table.editcliptable {padding-left: 30px;}
-
-table.editusertable {border-collapse: collapse;}
 
 .editusertable, .editusertable tr, .editusertable td {border: 1px solid blue;}
 

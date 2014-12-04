@@ -52,25 +52,67 @@ if ($errparm != NULL) {
 }
 */
 ?>
-<form action="processform.php" method="post" accept-charset="UTF-8">
+<form id="mainform" 
+		action="processform.php" 
+		method="post" 
+		accept-charset="UTF-8">
+Style set name: <input id="stylename" class="textbox" type="text" name="stylename" required>
+</form>
+
+
+<?
+/* The following div is a bank from which form elements can be copied as needed for each
+   style that's added. It is always hidden.
+   
+   The divs are identified by class, since they may be replicated.
+*/
+?>
+<div id="formbank" class="hidden">
+
+<div class="styletemplate">
 <h1>Enter style information</h1>
 <ul class="nobullet" title="Select the type of style">
-<li><input type="radio" id="textstyle" 
+<li><input type="radio" class="textstyle" 
 		name="styletype" value="text"
-		onclick="styleTypeUpdate();">
+		onclick="styleTypeUpdate(this);">
 	<label for="textstyle">Text</label></li>
-<li><input type="radio" id="svgstyle" 
+<li><input type="radio" class="svgstyle" 
 		name="styletype" value="svg"
-		onclick="styleTypeUpdate();">
+		onclick="styleTypeUpdate(this);">
 	<label for="svgstyle">SVG</label></li>
-<li><input type="radio" id="imagestyle" 
+<li><input type="radio" class="imagestyle" 
 		name="styletype" value="image" 
-		onclick="styleTypeUpdate();">
+		onclick="styleTypeUpdate(this);">
 	<label for="imagestyle">Image</label></li>
 <li>&nbsp;</li>
+<li><input type="radio" class="blockstyle" 
+		name="styletype" value="block" 
+		onclick="styleTypeUpdate(this);">
+	<label for="imagestyle">Image</label></li>
+<li>&nbsp;</li>
+<li><input type="radio" class="logostyle" 
+		name="styletype" value="logo" 
+		onclick="styleTypeUpdate(this);">
+	<label for="imagestyle">Logo</label></li>
+<li>&nbsp;</li>
 </ul>
+<div class="varinfo"></div>
 
-Style name: <input id="stylename" class="textbox" type="text" name="stylename" required>
+	<button type="button" onclick="addStyle(this);">Add</button>
+	<button type="button" onclick="removeStyle(this);">Remove</button>
+
+<hr>
+</div>	<!-- styletemplate -->
+
+
+<div class="imageinfo">
+<h4>Image</h4>
+<ul class="nobullet">
+	<li class="imagepath">
+	Image file path: <input class="textbox" type="text" name="imagepath">
+</ul>
+</div>		<!-- imageinfo -->
+
 
 <div id="svginfo" class="hidden">
 <h4>SVG</h4>
@@ -84,8 +126,8 @@ Parameter(s):
 	<li class="svgparamitem">
 	Parameter name: <input class="paramnamebox" type="text" name="svgparamnames[]">
 	Parameter value: <input class="paramvalbox" type="text" name="svgparamvalues[]">
-	<button type="button" onclick="addsvginput(this);">+</button>
-	<button type="button" onclick="removesvginput(this);">-</button>
+	<button type="button" onclick="addSVGInput(this);">+</button>
+	<button type="button" onclick="removeSVGInput(this);">-</button>
 	</li>
 	<li>&nbsp;</li>
 </ul>
@@ -94,17 +136,7 @@ Parameter(s):
 </div>	<!-- svginfo -->
 
 
-
-<div id="imageinfo" class="hidden">
-<h4>Image</h4>
-<ul class="nobullet">
-	<li class="imagepath">
-	Image file path: <input class="textbox" type="text" name="imagepath">
-</ul>
-</div>		<!-- imageinfo -->
-
-
-<div id="textinfo" class="hidden">
+<div class="textinfo">
 <h4>Text</h4>
 <ul class="nobullet">
 	<li>
@@ -116,101 +148,32 @@ Parameter(s):
 	<input id="italiccb" type="checkbox" name="italic">
 	<label for="italiccb"><i>Italic</i></label>
 </ul>
-</div>		<!-- textinfo -->
+
+<div class="blockinfo">
+<h4>Block</h4>
+</div>		<!-- blockinfo -->
+
+<div class="logoinfo">
+<h4>Logo</h4>
+</div>		<!-- logoinfo -->
 
 <ul class="nobullet">
 <li >
 <input type="submit" class="submitbutton" value="Submit" ">
 </li>
 </ul>
+</div>	<!-- End formbank -->
 
 
-
-</form>
 
 
 
 <!-- Put scripts at end for faster load -->
 
 <script type="text/JavaScript"
-src="http://code.jquery.com/jquery-1.11.1.js">
-</script>
-<script type="text/JavaScript">
-$(document).ready(
-	function () {
-		styleTypeUpdate();
-		/* Display notification if the audio fails to load.
-		   Attach this to both audio and source for best compatibility. */
-		$("#audio, #audiosrc").on("error", function () {
-			$("#audioerror").css("display", "block");
-		});
-	});
+	src="http://code.jquery.com/jquery-1.11.1.js"/>
 
-
-
-function styleTypeUpdate() {
-	var checkFound = false;
-	if ($('#textstyle').is(':checked')) {
-		$('#textinfo').show();
-		checkFound = true;
-	}
-	else 
-		$('#textinfo').hide();
-
-	if ($('#imagestyle').is(':checked')) {
-		$('#imageinfo').show();
-		checkFound = true;
-	} 
-	else 
-		$('#imageinfo').hide();
-
-	if ($('#svgstyle').is(':checked')) {
-		$('#svginfo').show();
-		checkFound = true;
-	} 
-	else {
-		$('#svginfo').hide();
-	}
-	if (!checkFound) {
-		// Set a default
-		$('#textinfo').show();
-		$('#textstyle').prop('checked', true);
-		
-	}
-}
-
-/* Add a line for SVG param/value TODO make this work */
-function addsvginput (buttn) {
-	/* The argument is the button whose parent needs to be cloned */
-	var litem = $(buttn).parent();
-	var newitem = litem.clone();
-	newitem.find("input").val("");
-	litem.after(newitem);
-}
-
-/* Remove a text input for SVG param */
-function removesvginput (buttn) {
-	var litem = $(buttn).parent();
-	var list = litem.parent();
-	// Don't delete last item!
-	if (list.find(".svgparamitem").length > 1)
-		litem.remove();
-	
-}
-
-/* Set the value of the dochain field when the submit and continue button
-   is clicked */
-function chainOn () {
-	$('#dochain').attr("value", "yes");
-}
-
-/* Clear the value of the dochain field when the plain submit button
-   is clicked */
-function chainOff () {
-	$('#dochain').attr("value", "");
-}
-</script>
-
+<script type="text/javascript" src="js/enter.js"/>
 
 </body>
 </html>

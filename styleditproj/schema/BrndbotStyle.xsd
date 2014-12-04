@@ -5,15 +5,24 @@
 		elementFormDefault="qualified">
 
 
-	<xs:element name="style">
+	<xs:element name="styleSet">
 		<xs:complexType>
-			<xs:choice minOccurs="1" maxOccurs="unbounded">
-				<xs:element name="text" type="textElement"/>
-				<xs:element name="svg" type="svgElement"/>
-				<xs:element name="image" type="imageElement"/>
-			</xs:choice>
+			<xs:sequence>
+				<xs:element name="style">
+					<xs:complexType>
+						<xs:choice minOccurs="1" maxOccurs="unbounded">
+							<xs:element name="text" type="textElement"/>
+							<xs:element name="svg" type="svgElement"/>
+							<xs:element name="image" type="imageElement"/>
+							<xs:element name="logo" type="logoElement"/>
+							<xs:element name="block" type="blockElement"/>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	
 
 	<xs:complexType name="textElement">
 		<xs:sequence>
