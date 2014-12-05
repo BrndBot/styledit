@@ -34,8 +34,8 @@ class Organization {
 	public static $organizations;
 	
 	public function __construct($name) {
-		if (!isset (Organization::organizations)) {
-			Organization::organizations = array();
+		if (!isset (Organization::$organizations)) {
+			Organization::$organizations = array();
 		}
 		$this->name = $name;
 		$this->brandIdentities = array();
@@ -52,7 +52,7 @@ class Organization {
 }
 
 function readOrganizationFile ($path) {
-	var $currentOrg = null;
+	$currentOrg = null;
 	$organizations = array();
 	$orgFile = fopen($path, "r");
 	while (!feof($orgFile)) {
@@ -64,13 +64,13 @@ function readOrganizationFile ($path) {
 		$lineVal = trim($parsedLine[1]);
 		if ($lineType == 'organization') {
 			$currentOrg = new Organization($lineVal);
-			Organization::organizations[] = $currentOrg;
+			Organization::$organizations[] = $currentOrg;
 		}
 		else if ($lineType == 'brand') {
-			$currentOrg.addBrand($lineVal);
+			$currentOrg->addBrand($lineVal);
 		}
 		else if ($lineType == 'promotion') {
-			$currentOrg.addPromotion($lineVal);
+			$currentOrg->addPromotion($lineVal);
 		}
 	}
 	fclose($orgFile);

@@ -21,7 +21,7 @@ try {
 		session_start();
 		$_SESSION['user'] = $userName;
 		readOrganizationFile ('config/orgs.dat');
-		$_SESSION['orgs'] = Organization::organizations;
+		$_SESSION['orgs'] = Organization::$organizations;
 		header ("Location: enter.php", true, 302);
 		return;
 	}

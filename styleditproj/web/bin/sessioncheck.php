@@ -12,6 +12,8 @@
    whole page will be executed. The caller has to return
    if sessioncheck returns false. */
 
+require_once ('bin/orgfile.php');
+
 /* Automatically kick the user to the login page if no session with a user */
 function sessioncheck () {
 	if (!$_SESSION['user']) {
@@ -19,7 +21,7 @@ function sessioncheck () {
 		return NULL;
 	}
 	else {
-		Organization::organizations = $_SESSION['organizations'];
+		Organization::$organizations = $_SESSION['organizations'];
 		return true;
 	}
 }

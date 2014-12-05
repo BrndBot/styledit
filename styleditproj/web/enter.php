@@ -52,11 +52,24 @@ if ($errparm != NULL) {
 }
 */
 ?>
+
+<h1>Enter style information</h1>
+
 <form id="mainform" 
 		action="processform.php" 
 		method="post" 
 		accept-charset="UTF-8">
-Style set name: <input id="stylename" class="textbox" type="text" name="stylename" required>
+<table>
+<tr><td>
+Style set name:</td> <td><input id="stylename" class="textbox" type="text" name="stylename" required>
+</td></tr>
+<tr><td>
+Overall width: </td> <td><input id="promowidth" class="textbox" type="number" min="1" name="promowidth" required>
+</td></tr>
+<tr><td>
+Overall height: </td> <td><input id="promoheight" class="textbox" type="number" min="1" name="promoheight" required>
+</td></tr>
+</table>
 </form>
 
 
@@ -70,36 +83,58 @@ Style set name: <input id="stylename" class="textbox" type="text" name="stylenam
 <div id="formbank" class="hidden">
 
 <div class="styletemplate">
-<h1>Enter style information</h1>
 <ul class="nobullet" title="Select the type of style">
-<li><input type="radio" class="textstyle" 
-		name="styletype" value="text"
-		onclick="styleTypeUpdate(this);">
-	<label for="textstyle">Text</label></li>
-<li><input type="radio" class="svgstyle" 
-		name="styletype" value="svg"
-		onclick="styleTypeUpdate(this);">
-	<label for="svgstyle">SVG</label></li>
-<li><input type="radio" class="imagestyle" 
-		name="styletype" value="image" 
-		onclick="styleTypeUpdate(this);">
-	<label for="imagestyle">Image</label></li>
+<li>
+	<label>
+		<input type="radio" class="textstyle" 
+			name="styletype" value="text"
+			onclick="styleTypeUpdate($(this));">
+		Text
+	</label></li>
+<li>
+	<label>
+		<input type="radio" class="svgstyle" 
+			name="styletype" value="svg"
+			onclick="styleTypeUpdate($(this));">
+		SVG
+	</label></li>
+<li>
+	<label>
+		<input type="radio" class="imagestyle" 
+			name="styletype" value="image" 
+			onclick="styleTypeUpdate($(this));">
+		Image
+	</label></li>
+<li>
+	<label>
+		<input type="radio" class="blockstyle" 
+			name="styletype" value="block" 
+			onclick="styleTypeUpdate($(this));">
+		Block
+	</label>
+<li>
+	<label>
+		<input type="radio" class="logostyle" 
+			name="styletype" value="logo" 
+			onclick="styleTypeUpdate($(this));">
+		Logo
+	</label>
 <li>&nbsp;</li>
-<li><input type="radio" class="blockstyle" 
-		name="styletype" value="block" 
-		onclick="styleTypeUpdate(this);">
-	<label for="imagestyle">Image</label></li>
-<li>&nbsp;</li>
-<li><input type="radio" class="logostyle" 
-		name="styletype" value="logo" 
-		onclick="styleTypeUpdate(this);">
-	<label for="imagestyle">Logo</label></li>
-<li>&nbsp;</li>
+<table>
+<tr><td>
+Width: </td> <td><input id="stylewidth" class="textbox" type="number" min="1" name="promowidth" required>
+</td></tr>
+<tr><td>
+Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" name="promoheight" required>
+</td></tr>
+</table>
+
 </ul>
+
 <div class="varinfo"></div>
 
-	<button type="button" onclick="addStyle(this);">Add</button>
-	<button type="button" onclick="removeStyle(this);">Remove</button>
+	<button type="button" onclick="addStyle($(this));">Add</button>
+	<button type="button" onclick="removeStyle($(this));">Remove</button>
 
 <hr>
 </div>	<!-- styletemplate -->
@@ -109,12 +144,20 @@ Style set name: <input id="stylename" class="textbox" type="text" name="stylenam
 <h4>Image</h4>
 <ul class="nobullet">
 	<li class="imagepath">
-	Image file path: <input class="textbox" type="text" name="imagepath">
+		Image file path: <input class="textbox" type="text" name="imagepath">
+	<li>
+		Opacity: <input class="textbox" type="number" min="0" max="100" value="100" name="opacity">
+	<li>
+		<label >
+			<input id="multiplycb" type="checkbox" name="multiply">
+			Multiply
+		</label>
+		
 </ul>
 </div>		<!-- imageinfo -->
 
 
-<div id="svginfo" class="hidden">
+<div class="svginfo">
 <h4>SVG</h4>
 
 <textarea name="svg" rows="4" cols="60" placeholder="<svg>...</svg>" >
@@ -124,8 +167,8 @@ Style set name: <input id="stylename" class="textbox" type="text" name="stylenam
 Parameter(s): 
 <ul class="nobullet">
 	<li class="svgparamitem">
-	Parameter name: <input class="paramnamebox" type="text" name="svgparamnames[]">
-	Parameter value: <input class="paramvalbox" type="text" name="svgparamvalues[]">
+		Parameter name: <input class="paramnamebox" type="text" name="svgparamnames[]">
+		Parameter value: <input class="paramvalbox" type="text" name="svgparamvalues[]">
 	<button type="button" onclick="addSVGInput(this);">+</button>
 	<button type="button" onclick="removeSVGInput(this);">-</button>
 	</li>
@@ -142,12 +185,39 @@ Parameter(s):
 	<li>
 	Default content: <input class="textbox" type="text" name="textcontent">
 	<li>
-	<input id="boldcb" type="checkbox" name="bold">
-	<label for="boldcb"><b>Bold</b></label>
+	<label>
+		<input type="checkbox" name="bold">
+		<b>Bold</b>
+	</label>
 	<li>
-	<input id="italiccb" type="checkbox" name="italic">
-	<label for="italiccb"><i>Italic</i></label>
+	<label>
+		<input type="checkbox" name="italic">
+		<i>Italic</i>
+	</label>
+	<li>
+	<label class="dropshadow">
+		<input type="checkbox" name="dropshadow">
+		Drop shadow
+	</label>
+	<li class="dropshadinfo">
+		<table style="padding-left:32px;">
+			<tr><td>H:</td><td> <input id="dropshadh" name="dropshadh" type="number" min="0"></td></tr>
+			<tr><td>V:</td><td> <input id="dropshadv" name="dropshadv" type="number" min="0"></td></tr>
+			<tr><td>Blur:</td><td> <input id="dropshadblur" name="dropshadblur" type="number" min="0"></td></tr>
+		</table>
+	</li>
+	<li>
+	<select name="palette" onchange=">
+		<option value="paletteone">Palette 1</option>
+		<option value="palettetwo">Palette 2</option>
+		<option value="palettethree">Palette 3</option>
+		<option value="palettefour">Palette 4</option>
+		<option value="palettecustom">Custom</option>
+	</select>
+	<li id="palettecustom">
+	Custom color:<input type="color" name="textcolor" value="#000000">
 </ul>
+</div>		<!-- textinfo -->
 
 <div class="blockinfo">
 <h4>Block</h4>
@@ -155,6 +225,17 @@ Parameter(s):
 
 <div class="logoinfo">
 <h4>Logo</h4>
+<ul class="nobullet">
+	<li>
+		<input id="logodropshadcb" type="checkbox" name="dropshadow">
+		<label for="logodropshadcb" class="dropshadow">Drop shadow</label> 
+	<li>
+		<table style="padding-left:32px;">
+			<tr><td>H:</td><td> <input id="logodropshadh" name="logodropshadh" type="number" min="0"></td></tr>
+			<tr><td>V:</td><td> <input id="logodropshadv" name="logodropshadv" type="number" min="0"></td></tr>
+			<tr><td>Blur:</td><td> <input id="logodropshadblur" name="logodropshadblur" type="number" min="0"></td></tr>
+		</table>
+</ul>
 </div>		<!-- logoinfo -->
 
 <ul class="nobullet">
@@ -171,9 +252,14 @@ Parameter(s):
 <!-- Put scripts at end for faster load -->
 
 <script type="text/JavaScript"
-	src="http://code.jquery.com/jquery-1.11.1.js"/>
+	src="http://code.jquery.com/jquery-1.11.1.js"></script>
 
-<script type="text/javascript" src="js/enter.js"/>
+<script type-"text/JavaScript">
+console.log("ECHO echo echo echo");
+</script>
+
+<script type="text/javascript" src="js/enter.js"></script>
+
 
 </body>
 </html>
