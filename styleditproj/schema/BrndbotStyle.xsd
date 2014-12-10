@@ -8,6 +8,7 @@
 	<xs:element name="styleSet">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="dimensions" type="dimensionType"/>
 				<xs:element name="style">
 					<xs:complexType>
 						<xs:choice minOccurs="1" maxOccurs="unbounded">
@@ -24,8 +25,11 @@
 	</xs:element>
 	
 
+	<!-- The five style types -->
 	<xs:complexType name="textElement">
 		<xs:sequence>
+			<xs:element name="dimensions" type="dimensionType"/>
+			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="textContent" minOccurs="1"/>
 			<xs:element name="bold" minOccurs="0"/>
 			<xs:element name="italic" minOccurs="0"/>
@@ -34,6 +38,8 @@
 	
 	<xs:complexType name="svgElement">
 		<xs:sequence>
+			<xs:element name="dimensions" type="dimensionType"/>
+			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="svg" minOccurs="1"/>
 			<xs:element name="param" type="svgParam" minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
@@ -42,8 +48,40 @@
 
 	<xs:complexType name="imageElement">
 		<xs:sequence>
-			<xs:element name="image" minOccurs="1">
-			</xs:element>
+			<xs:element name="dimensions" type="dimensionType"/>
+			<xs:element name="anchor" type="anchorType"/>
+			<xs:element name="image" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="logoElement">
+		<xs:sequence>
+			<xs:element name="dimensions" type="dimensionType"/>
+			<xs:element name="anchor" type="anchorType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="blockElement">
+		<xs:sequence>
+			<xs:element name="dimensions" type="dimensionType"/>
+			<xs:element name="anchor" type="anchorType"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType	name="anchorType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="bottomLeft"/>
+			<xs:enumeration value="bottomRight"/>
+			<xs:enumeration value="topLeft"/>
+			<xs:enumeration value="topRight"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	
+	<xs:complexType name="dimensionType">
+		<xs:sequence>
+			<xs:element name="x" type="xs:decimal"/>
+			<xs:element name="y" type="xs:decimal"/>
 		</xs:sequence>
 	</xs:complexType>
 	

@@ -23,7 +23,6 @@ promotion:Class
 Lines without a colon are ignored. The first line with a colon must
 be an organization.
    
-   It creates objects of class Organization.
 */
 
 class Organization {

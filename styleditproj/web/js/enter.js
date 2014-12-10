@@ -7,7 +7,6 @@ var imageInfoDiv;
 var logoInfoDiv;
 var blockInfoDiv;
 var mainForm;
-var divSuffix = 0;
 
 window.onerror = function(msg, url, line, col, error) {
    // Note that col & error are new to the HTML 5 spec and may not be 
@@ -41,41 +40,50 @@ $(function () {
 });
 
 
-/* The new styleTypeUpdate needs to know which style we're changing,
-   and it rips out the old contents to replace them with a copy of
+/* styleTypeUpdate rips out the old contents to replace them with a copy of
    the appropriate div. The first part of a style's form fields is
    constant, so we replace only the variable part.
 */
 function styleTypeUpdate(buttn) {
 	var newsrc = null;
-	if (buttn.hasClass('textstyle'))
+	var hdrtxt = null;
+	if (buttn.hasClass('textstyle')) {
 		newsrc = textInfoDiv;
-	else if (buttn.hasClass('svgstyle'))
+		hdrtxt = "Text";
+	}
+	else if (buttn.hasClass('svgstyle')) {
 		newsrc = svgInfoDiv;
-	else if (buttn.hasClass('imagestyle'))
+		hdrtxt = "SVG";
+	}
+	else if (buttn.hasClass('imagestyle')) {
 		newsrc = imageInfoDiv;
-	else if (buttn.hasClass('logostyle'))
+		hdrtxt = "Image";
+	}
+	else if (buttn.hasClass('logostyle')) {
 		newsrc = logoInfoDiv;
-	else if (buttn.hasClass('blockstyle'))
+		hdrtxt = "Logo";
+	}
+	else if (buttn.hasClass('blockstyle')) {
 		newsrc = blockInfoDiv;
+		hdrtxt = "Block";
+	}
 	var segment = buttn.closest('.styletemplate');
+	segment.find('.typehdr').text(hdrtxt);
+	
 	var varinfo = segment.find('.varinfo');
 	varinfo.empty();
 	varinfo.append(newsrc.clone());
-	console.log("newsrc:");
-	console.log(newsrc.html());
-	console.log("segment:");
-	console.log(segment.html());
+	makeNamesUnique();
 }
 
 /* Add the first style */
 function addFirstStyle () {
 	var newInstance = styleTemplateDiv.clone();
-	$('#mainform').append(newInstance);
+//	$('#mainform').append(newInstance);
+	$('#globalfields').after (newInstance);
 	var checkedButton = newInstance.find('.textstyle');
 	checkedButton.attr('checked', true);
 	styleTypeUpdate(checkedButton);
-	makeNamesUnique(newInstance);
 }
 
 /* Add a style after the one whose add button was just clicked */
@@ -88,7 +96,6 @@ function addStyle (buttn) {
 	var checkedButton = newInstance.find('.textstyle');
 	checkedButton.attr('checked', true);
 	styleTypeUpdate(checkedButton);
-	makeNamesUnique(newInstance);
 }
 
 /* Remove a style containing the Remove button that was just clicked. */
@@ -120,26 +127,32 @@ function removeSVGInput (buttn) {
 }
 
 /* Fix up the input names in a division to be different from
-   all other divisions. The divs are all built while the page
-   is in active, so we can use a var to track the next suffix
-   to use. */
-function makeNamesUnique (div) {
-	var suffixStr = divSuffix.toString();
-	divSuffix++;
-//	$("input[name='styletype']").attr("name", "styletype" + suffixStr);
-//	$("input[name='textcontent']").attr("name", "textcontent" + suffixStr);
-	
-	//bleah. I can select all input elements that have the attribute name,
-	//pull in the attribute, and replace it.
-	var inputs = div.find("input[name],select[name]");
-	inputs.each (function (idx) {
-		var nam = $(this).attr("name");
-		$(this).attr("name", nam + suffixStr);
+   all other divisions. Really want to make them sequential
+   too, so we can create XML in the proper order. */
+function makeNamesUnique () {
+	$('div.styletemplate').each (function (idx0) {
+		//Select all input elements that have the attribute "name",
+		//pull in the attribute, and change the value to end with -idx0.
+		//If there's already a suffix, replace it.
+		var inputs = $(this).find("input[name],select[name]");
+		inputs.each (function (idx) {
+			var nam = $(this).attr("name");
+			$(this).attr("name", suffixName(nam, idx0));
+		});
+		// Also fix IDs
+		inputs = $(this).find("input[id]");
+		inputs.each (function (idx) {
+			var id = $(this).attr("id");
+			$(this).attr("id", suffixName(id, idx0));
+		});
 	});
-	// Should I also fix IDs and label "for" attributes?
-	inputs = div.find("input[id]");
-	inputs.each (function (idx) {
-		var id = $(this).attr("id");
-		$(this).attr("id", id + suffixStr);
-	});
+}
+
+/* This function takes a string and appends "-n" where n is the argument.
+   If there's already a -n suffix, it first strips off the old one. */
+function suffixName (nam, n) {
+	var hyphenIdx = nam.indexOf("-");
+	if (hyphenIdx > 0)
+		nam = nam.substr(0, hyphenIdx) 
+	return nam + '-' + n;
 }

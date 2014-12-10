@@ -37,10 +37,10 @@ if (!sessioncheck())
 $errparm = $_GET["err"];
 if ($errparm != NULL) {
 	switch ($errparm) {
-	case IDFORM_NO_CLIPTYPE:
+	case "1":
 		$errmsg = "Please specify a clip type.";
 		break;	
-	case DB_INSERT_FAILURE:
+	case "2":
 		$errmsg = "Error writing to the database.";
 		break;
 	default:
@@ -59,7 +59,7 @@ if ($errparm != NULL) {
 		action="processform.php" 
 		method="post" 
 		accept-charset="UTF-8">
-<table>
+<table id="globalfields">
 <tr><td>
 Style set name:</td> <td><input id="stylename" class="textbox" type="text" name="stylename" required>
 </td></tr>
@@ -70,6 +70,12 @@ Overall width: </td> <td><input id="promowidth" class="textbox" type="number" mi
 Overall height: </td> <td><input id="promoheight" class="textbox" type="number" min="1" name="promoheight" required>
 </td></tr>
 </table>
+
+<ul class="nobullet">
+<li >
+<input type="submit" class="submitbutton" value="Submit" ">
+</li>
+</ul>
 </form>
 
 
@@ -120,12 +126,13 @@ Overall height: </td> <td><input id="promoheight" class="textbox" type="number" 
 		Logo
 	</label>
 <li>&nbsp;</li>
+<h4 class="typehdr"></h4>
 <table>
 <tr><td>
-Width: </td> <td><input id="stylewidth" class="textbox" type="number" min="1" name="promowidth" required>
+Width: </td> <td><input id="stylewidth" class="textbox" type="number" min="1" name="stylewidth" required>
 </td></tr>
 <tr><td>
-Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" name="promoheight" required>
+Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" name="styleheight" required>
 </td></tr>
 </table>
 
@@ -141,7 +148,6 @@ Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" 
 
 
 <div class="imageinfo">
-<h4>Image</h4>
 <ul class="nobullet">
 	<li class="imagepath">
 		Image file path: <input class="textbox" type="text" name="imagepath">
@@ -158,7 +164,6 @@ Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" 
 
 
 <div class="svginfo">
-<h4>SVG</h4>
 
 <textarea name="svg" rows="4" cols="60" placeholder="<svg>...</svg>" >
 </textarea>
@@ -180,7 +185,6 @@ Parameter(s):
 
 
 <div class="textinfo">
-<h4>Text</h4>
 <ul class="nobullet">
 	<li>
 	Default content: <input class="textbox" type="text" name="textcontent">
@@ -220,11 +224,9 @@ Parameter(s):
 </div>		<!-- textinfo -->
 
 <div class="blockinfo">
-<h4>Block</h4>
 </div>		<!-- blockinfo -->
 
 <div class="logoinfo">
-<h4>Logo</h4>
 <ul class="nobullet">
 	<li>
 		<input id="logodropshadcb" type="checkbox" name="dropshadow">
@@ -238,11 +240,6 @@ Parameter(s):
 </ul>
 </div>		<!-- logoinfo -->
 
-<ul class="nobullet">
-<li >
-<input type="submit" class="submitbutton" value="Submit" ">
-</li>
-</ul>
 </div>	<!-- End formbank -->
 
 
