@@ -28,14 +28,12 @@ function buildFromForm () {
 	// till we don't find a name with that suffix.
 	for ($suffix = 0;; $suffix++) {
 		$newSegment = buildSegment($suffix);
-		error_log ("Returned segment " . $newSegment);
 		if ($newSegment) {
 			$content .= $newSegment;
 		} else {
 			break;
 		}
 	}
-	error_log ("about to return final content " . $content);
 	return XMLFile::wrapContentWithAtts ($content, "styleSet", $styleatt);
 }
 
@@ -73,26 +71,50 @@ function appendSuffix ($name, $n) {
 
 /* We have a text selection. Build its XML. */
 function buildTextContent ($n) {
-	error_log ("buildTextContent");
 	$content = dimensionContent ($n);
+	$content .= anchorContent ($n);
 	$defaultText = $_POST[appendSuffix("textcontent",$n)];
 	if ($defaultText) {
 		$content .= XMLFile::wrapContent ($defaultText, "default");
+	}
+	$fontOption = $_POST[appendSuffix("font", $n)];
+	$content .= XMLFile::wrapContent($fontOption, "font");
+	$pointSize = $_POST[appendSuffix("pointsize", $n)];
+	$content .= XMLFile::wrapContent($pointSize, "size");
+
 	if ($_POST["bold"]) {
 		$content .= XMLFile::emptyTag("bold");
 	}
 	if ($_POST[appendSuffix("italic", $n)]) {
 		$content .= XMLFile::emptyTag("italic");
 	}
+	if ($_POST[appendSuffix("dropshadow", $n)]) {
+		$h = $_POST[appendSuffix("dropshadh", $n)];
+		$v = $_POST[appendSuffix("dropshadv", $n)];
+		$blur = $_POST[appendSuffix("dropshadblur", $n)];
+		$dropContent = XMLFile::wrapContent ($h, "h", 2);
+		$dropContent .= XMLFile::wrapContent ($v, "v", 2);
+		$dropContent .= XMLFile::wrapContent ($blur, "blur", 2);
+		$content .= XMLFile::wrapContent ($dropContent, "dropshadow");
+	}
+	$paletteOption = $_POST[appendSuffix("palette", $n)];
+	$content .= XMLFile::wrapContent($paletteOption, "palette");
+	if ($paletteOption == 'palettecustom') {
+		$customColor = $_POST[appendSuffix("textcolor", $n)];
+		$content .= XMLFile::wrapContent ($customColor, "textcolor");
+	}
+	
 	return XMLFile::wrapContent ($content, "text");
 		
-	}
 }
 
 /* We have an SVG selection. Build its XML. */
 function buildSVGContent ($n) {
+	error_log("buildSVGContent");
 	$content = dimensionContent ($n);
+	$content .= anchorContent ($n);
 	$svg = $_POST[appendSuffix("svg", $n)];
+	error_log("svg: " . $svg);
 	$content .= $svg . "\n";
 	$svgparamnames = $_POST[appendSuffix("svgparamnames", $n)];
 	$svgparamvalues = $_POST[appendSuffix("svgparamvalues", $n)];
@@ -104,33 +126,48 @@ function buildSVGContent ($n) {
 		$content .= XMLFile::wrapContent ($nameElement . $valElement, "param");
 		
 	}
+	error_log ("SVG content: " . $content);
 	return XMLFile::wrapContent ($content, "svgdata");
 }
 
 /* We have an image selection. Build its XML. */
 function buildImageContent ($n) {
-	error_log ("buildImageContent");
 	$content = dimensionContent ($n);
+	$content .= anchorContent ($n);
 	$content .= XMLFile::wrapContent ($_POST[appendSuffix("imagepath",$n)], "path");
-	error_log ("content = " . $content);
+	$content .= XMLFile::wrapContent ($_POST[appendSuffix("opacity",$n)], "opacity");
+	if ($_POST[appendSuffix("multiply", $n)]) {
+		$content .= XMLFile::emptyTag("multiply");
+	}
+	
 	return XMLFile::wrapContent ($content, "image");	
 }
 
 /* We have a block selection. Build its XML. */
 function buildBlockContent ($n) {
 	$content = dimensionContent ($n);
+	$content .= anchorContent ($n);
 	return XMLFile::wrapContent ($content, "block");	
 }
 
 /* We have a logo selection. Build its XML. */
 function buildLogoContent ($n) {
 	$content = dimensionContent ($n);
+	$content .= anchorContent ($n);
+	if ($_POST[appendSuffix("dropshadow", $n)]) {
+		$h = $_POST[appendSuffix("logodropshadh", $n)];
+		$v = $_POST[appendSuffix("logodropshadv", $n)];
+		$blur = $_POST[appendSuffix("logodropshadblur", $n)];
+		$dropContent = XMLFile::wrapContent ($h, "h", "2");
+		$dropContent .= XMLFile::wrapContent ($v, "v", "2");
+		$dropContent .= XMLFile::wrapContent ($blur, "blur", "2");
+		$content .= XMLFile::wrapContent ($dropContent, "dropshadow");
+	}
 	return XMLFile::wrapContent ($content, "logo");	
 }
 
 /* Dimension content is common to all style types. */
 function dimensionContent ($n) {
-	error_log("dimensionContent");
 	$wid = $_POST[appendSuffix("stylewidth", $n)];
 	$ht = $_POST[appendSuffix("styleheight", $n)];
 	$widElem = XMLFile::wrapContent ($wid, "x");
@@ -138,14 +175,36 @@ function dimensionContent ($n) {
 	return XMLFile::wrapContent ($widElem . $htElem, "dimensions");
 }
 
+/* The anchor specification is common to all style types. */
+function anchorContent ($n) {
+	$anchor = $_POST[appendSuffix("anchor", $n)];
+	switch ($anchor) {
+		case "Top left":
+			$a = "tl";
+			break;
+		case "Top right":
+			$a = "tr";
+			break;
+		case "Bottom left":
+			$a = "bl";
+			break;
+		case "Bottom right":
+		default:
+			$a = "br";
+			break;
+	}
+	return XMLFile::wrapContent ($a, "anchor");	
+}
 
-/* Write the XML. This will fail if the file already exists. */
+
+/* Write the XML. This will throw an exception if the file already 
+   exists or anything else goes wrong. On success it returns the file name. */
 function saveXML ($xml) {
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
 		$xmlf->writeFile($xml);
-		return true;
+		return $filename;
 	}
 	catch (Exception $e) {
 		error_log($e->getMessage());
@@ -168,8 +227,9 @@ function saveXML ($xml) {
 
 <?php
 	$xml = buildFromForm ();
-	if (saveXML ($xml)) {
-		echo ("<p>Form has been submitted successfully.</p>");
+	$filename = saveXML($xml);
+	if ($filename) {
+		echo ("<p>Form has been submitted successfully, saved as " . $filename . ".</p>");
 	}
 ?>
 </pre>

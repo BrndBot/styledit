@@ -21,6 +21,9 @@ function sessioncheck () {
 		if (array_key_exists ('organizations', $_SESSION)) {
 			Organization::$organizations = $_SESSION['organizations'];
 		}
+		if (array_key_exists ('fonts', $_SESSION)) {
+			FontFile::$fonts = $_SESSION['fonts'];
+		}
 		return true;
 	}
 }

@@ -53,9 +53,16 @@ var $fileName;
 	 
 	/* Wrap arbitrary content in a start and end tag, with an attributes string */
 	public static function  wrapContentWithAtts ($content, $tag, $attrs) {
-	return '<' . $tag . ' ' . $attrs . ">\n" .
-		$content .
-		"\n</" . $tag . ">\n";
+		if (strpos($content, "<") == 0) {
+			$val = '<' . $tag . ' ' . $attrs . ">" .
+				$content .
+				"</" . $tag . ">\n";
+		} else {
+			$val =  '<' . $tag . ' ' . $attrs . ">\n" .
+				$content .
+				"\n</" . $tag . ">\n";
+		}
+		return $val;
 	}
 	
 	/* Produce an empty tag */
@@ -63,26 +70,33 @@ var $fileName;
 		return '<' . $tag . "/>\n";
 	}
 
-	/* Wrap arbitrary content in a start and end tag */
-	public static function wrapContent ($content, $tag) {
-		error_log ("XMLFile wrapContent " . $content);
-		error_log ("tag = " . $tag);
-		return '<' . $tag . ">\n" .
-			$content .
-			"\n</" . $tag . ">\n";
+	/* Wrap arbitrary content in a start and end tag.
+	   Add line breaks around the content if it starts with "<". */
+	public static function wrapContent ($content, $tag, $default=null) {
+		if (!$content && isset ($default))
+			$content = $default;
+		if (strpos($content, "<") == 0) {
+			$val = '<' . $tag . ">" .
+				$content .
+				"</" . $tag . ">\n";
+		} else {
+			$val = '<' . $tag . ">\n" .
+				$content .
+				"\n</" . $tag . ">\n";
+		}
+		return $val;
 	}
 	
 	/* An intruder can't do much, but snooping through the filesystem is a possibility. */
 	private static function isFilenameEvil ($fname) {
 		// Argh. strpos may return either a number or false.
-		error_log("Checking filename " . $fname);
 		$slashpos = strpos($fname, "/");
 		$backslashpos = strpos($fname, "\\");
 		$dotdotpos = strpos($fname, "..");
 		$tildepos = strpos($fname, "~");
-		return (($slashpos && $slashpos == 0) ||
-			($backslashpos && $backslashpos == 0) ||
-			$dotdotpos ||
-			$tildepos);
+		return ($slashpos === 0 ||
+			$backslashpos === 0 ||
+			!($dotdotpos === false) ||
+			!($tildepos === false));
 	}
 }

@@ -11,6 +11,7 @@
 
 require_once ('bin/supportfuncs.php');
 require_once ('bin/orgfile.php');
+require_once ('bin/fontfile.php');
 
 	
 try {
@@ -22,6 +23,10 @@ try {
 		$_SESSION['user'] = $userName;
 		readOrganizationFile ('config/orgs.dat');
 		$_SESSION['orgs'] = Organization::$organizations;
+		
+		readFontFile ("config/fonts.dat");
+		$_SESSION['fonts'] = FontFile::$fonts;
+		error_log("font 0 = " . FontFile::$fonts[0]);
 		header ("Location: enter.php", true, 302);
 		return;
 	}

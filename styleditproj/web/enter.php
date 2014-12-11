@@ -5,11 +5,9 @@
  *  
  *  All rights reserved by Brndbot, Ltd. 2014
 */
-/*
-require_once('bin/config.php');
-require_once('bin/supportfuncs.php');
-require_once('bin/globalconstants.php');
-*/
+
+require_once ('bin/fontfile.php');
+require_once ('bin/orgfile.php');
 
 header("Content-type: text/html; charset=utf-8");
 
@@ -60,6 +58,17 @@ if ($errparm != NULL) {
 		method="post" 
 		accept-charset="UTF-8">
 <table id="globalfields">
+<tr><td>Organization:</td>
+<td>
+	<select name="orgname" onchange="updateOrgBasedSels();">
+<?php
+	/* Fill in the organizations pulldown menu */ 
+	while (list($key, $org) = each(Organization::$organizations)) {
+		echo ("<option>" . $org->name . "</option>\n");
+	}
+?>
+	</select>
+</td</tr>
 <tr><td>
 Style set name:</td> <td><input id="stylename" class="textbox" type="text" name="stylename" required>
 </td></tr>
@@ -134,6 +143,16 @@ Width: </td> <td><input id="stylewidth" class="textbox" type="number" min="1" na
 <tr><td>
 Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" name="styleheight" required>
 </td></tr>
+<tr>
+<td>Anchor:</td>
+<td>
+<select name="anchor">
+	<option name="tl">Top left</option>
+	<option name="tr">Top right</option>
+	<option name="bl">Bottom left</option>
+	<option name="br">Bottom right</option>
+</select>
+</td><tr>
 </table>
 
 </ul>
@@ -189,6 +208,18 @@ Parameter(s):
 	<li>
 	Default content: <input class="textbox" type="text" name="textcontent">
 	<li>
+	Font:
+	<select name="font">
+<?php
+	/* Fill in the font pulldown menu */
+	while (list($key, $val) = each(FontFile::$fonts)) {
+		echo ("<option>$val</option>\n");
+	}
+?>
+	</select>
+	<li>
+	Point size: <input class="textbox" name="pointsize" type="number" min="0" max="300" required>
+	<li>
 	<label>
 		<input type="checkbox" name="bold">
 		<b>Bold</b>
@@ -211,26 +242,42 @@ Parameter(s):
 		</table>
 	</li>
 	<li>
-	<select name="palette" onchange=">
+	Color:
+	<select name="palette" onchange="showHideCustom($(this));">
 		<option value="paletteone">Palette 1</option>
 		<option value="palettetwo">Palette 2</option>
 		<option value="palettethree">Palette 3</option>
 		<option value="palettefour">Palette 4</option>
 		<option value="palettecustom">Custom</option>
 	</select>
-	<li id="palettecustom">
+	<li id="palettecustom" style="display:none">
 	Custom color:<input type="color" name="textcolor" value="#000000">
 </ul>
 </div>		<!-- textinfo -->
 
 <div class="blockinfo">
+<ul class="nobullet">
+	<li>
+	Color:
+	<select name="palette" onchange="showHideCustom($(this));">
+		<option value="paletteone">Palette 1</option>
+		<option value="palettetwo">Palette 2</option>
+		<option value="palettethree">Palette 3</option>
+		<option value="palettefour">Palette 4</option>
+		<option value="palettecustom">Custom</option>
+	</select>
+	<li id="palettecustom" style="display:none">
+	Custom color:<input type="color" name="blockcolor" value="#000000">
+</ul>
 </div>		<!-- blockinfo -->
 
 <div class="logoinfo">
 <ul class="nobullet">
 	<li>
-		<input id="logodropshadcb" type="checkbox" name="dropshadow">
-		<label for="logodropshadcb" class="dropshadow">Drop shadow</label> 
+		<label class="dropshadow">
+			<input id="logodropshadcb" type="checkbox" name="dropshadow">
+			Drop shadow
+		</label> 
 	<li>
 		<table style="padding-left:32px;">
 			<tr><td>H:</td><td> <input id="logodropshadh" name="logodropshadh" type="number" min="0"></td></tr>

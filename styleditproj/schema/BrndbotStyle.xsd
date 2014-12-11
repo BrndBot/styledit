@@ -30,9 +30,14 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
-			<xs:element name="textContent" minOccurs="1"/>
+			<xs:element name="textContent" />
+			<xs:element name="font" />
+			<xs:element name="size" />
 			<xs:element name="bold" minOccurs="0"/>
 			<xs:element name="italic" minOccurs="0"/>
+			<xs:element name="dropshadow" type="dropshadowType" minOccurs="0"/>
+			<xs:element name="palette" type="paletteType"/>
+			<xs:element name="textcolor" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -50,7 +55,9 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
-			<xs:element name="image" minOccurs="1"/>
+			<xs:element name="imagepath"/>
+			<xs:element name="opacity" type="xs:decimal"/>
+			<xs:element name="multiply" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -67,13 +74,31 @@
 			<xs:element name="anchor" type="anchorType"/>
 		</xs:sequence>
 	</xs:complexType>
+	
+	<xs:complexType name="dropshadowType">
+		<xs:sequence>
+			<xs:element name="h" type="xs:decimal"/>
+			<xs:element name="v" type="xs:decimal"/>
+			<xs:element name="blur" type="xs:decimal"/>
+		</xs:sequence>
+	</xs:complexType>
 
 	<xs:simpleType	name="anchorType">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="bottomLeft"/>
-			<xs:enumeration value="bottomRight"/>
-			<xs:enumeration value="topLeft"/>
-			<xs:enumeration value="topRight"/>
+			<xs:enumeration value="bl"/>
+			<xs:enumeration value="br"/>
+			<xs:enumeration value="tl"/>
+			<xs:enumeration value="tr"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="paletteType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="paletteone"/>
+			<xs:enumeration value="palettetwo"/>
+			<xs:enumeration value="palettethree"/>
+			<xs:enumeration value="palettefour"/>
+			<xs:enumeration value="palettecustom"/>
 		</xs:restriction>
 	</xs:simpleType>
 	

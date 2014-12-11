@@ -107,8 +107,21 @@ function removeStyle (buttn) {
 		curInstance.remove();
 }
 
-/* Add a line for SVG param/value  */
-/* The argument is the button whose parent needs to be cloned */
+/* Show or hide the custom color based on the palette selection.
+ * It assumes that sel is contained in a li element and that the 
+ * next li element contains the custom color selector. */
+function showHideCustom (sel) {
+	option = sel.val();
+	picker = sel.parent().next();
+	if (option == "palettecustom") {
+		picker.show();
+	} else {
+		picker.hide();
+	}
+}
+
+/* Add a line for SVG param/value 
+   The argument is the button whose parent needs to be cloned */
 function addSVGInput (buttn) {
 	var litem = $(buttn).parent();
 	var newitem = litem.clone();
@@ -134,7 +147,8 @@ function makeNamesUnique () {
 		//Select all input elements that have the attribute "name",
 		//pull in the attribute, and change the value to end with -idx0.
 		//If there's already a suffix, replace it.
-		var inputs = $(this).find("input[name],select[name]");
+		//If the parameter name ends in [], keep the brackets at the end.
+		var inputs = $(this).find("input[name],select[name],textarea[name]");
 		inputs.each (function (idx) {
 			var nam = $(this).attr("name");
 			$(this).attr("name", suffixName(nam, idx0));
@@ -151,8 +165,18 @@ function makeNamesUnique () {
 /* This function takes a string and appends "-n" where n is the argument.
    If there's already a -n suffix, it first strips off the old one. */
 function suffixName (nam, n) {
+	var isArray = nam.indexOf("[]") > 0;
+	if (isArray) {
+		// chop of the brackets first
+		nam = nam.substr(0, nam.length - 2);
+	}
 	var hyphenIdx = nam.indexOf("-");
 	if (hyphenIdx > 0)
 		nam = nam.substr(0, hyphenIdx) 
-	return nam + '-' + n;
+	var val = nam + '-' + n;
+	// Now put the brackets back if they were removed
+	if (isArray) {
+		val = val + '[]';
+	}
+	return val;
 }
