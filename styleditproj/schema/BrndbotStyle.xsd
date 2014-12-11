@@ -9,6 +9,9 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="dimensions" type="dimensionType"/>
+				<xs:element name="org"/>
+				<xs:element name="brand"/>
+				<xs:element name="promo"/>
 				<xs:element name="style">
 					<xs:complexType>
 						<xs:choice minOccurs="1" maxOccurs="unbounded">

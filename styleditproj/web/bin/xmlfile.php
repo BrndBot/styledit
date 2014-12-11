@@ -24,12 +24,15 @@ var $fileName;
 	
 	/** Write XML content to a file. Adds the XML declaration at the top.
 	  *  Will not overwrite an existing file. May throw an exception.
+	  *  This code assumes slash as a file separator and won't work on
+	  *  Windows.
 	  */
-	public function writeFile ($content) {
+	public function writeFile ($org, $brand, $promo, $content) {
 		if (!isset($this->fileName)) {
 			throw new Exception ('Invalid file name.');
 		}
-		$fPath = XMLFile::CREATED_STYLES_DIR . $this->fileName;
+		$dir = $this->makePath($org, $brand, $promo);
+		$fPath = $dir . "/" . $this->fileName;
 		error_log ("Writing " . $fPath);
 		if (file_exists($fPath)) {
 			throw new Exception ('File already exists.');
@@ -48,7 +51,30 @@ var $fileName;
 		fclose ($xmlfile);
 	}
 	
-	/** Utility function for building XML elements.
+	/* Create directory path. Returns the path without a slash at the end. */
+	private function makePath ($org, $brand, $promo) {
+		// May need to create parent directories
+		$path = XMLFile::CREATED_STYLES_DIR . $this->whiteOut($org);
+		if (!file_exists ($path)) 
+			mkdir($path);
+		$path .= "/" . $this->whiteOut($brand);
+		if (!file_exists ($path)) 
+			mkdir($path);
+		$path .= "/" . $this->whiteOut($promo);
+		if (!file_exists ($path)) 
+			mkdir($path);
+		return $path;
+	}
+	
+	/* Remove all white space from a name, so it makes a more friendly
+       ID and directory name */
+	private function whiteOut ($s) {
+		return preg_replace('/\s+/', '', $s);
+	}
+	
+	
+	
+	/** Utility functions for building XML elements.
 	 */
 	 
 	/* Wrap arbitrary content in a start and end tag, with an attributes string */

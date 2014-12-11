@@ -17,9 +17,6 @@ window.onerror = function(msg, url, line, col, error) {
    // You can view the information in an alert to see things working like this:
    alert("Error: " + msg + "\nurl: " + url + "\nline: " + line + extra);
 
-   // TODO: Report this error via ajax so you can keep track
-   //       of what pages have JS issues
-
    var suppressErrorAlert = true;
    // If you return true, then error alerts (like in older versions of 
    // Internet Explorer) will be suppressed.
@@ -37,6 +34,7 @@ $(function () {
 	blockInfoDiv = $('#formbank .blockinfo');
 	mainForm = $('#mainform');
 	addFirstStyle();
+	updateOrgBasedSels();
 });
 
 
@@ -179,4 +177,25 @@ function suffixName (nam, n) {
 		val = val + '[]';
 	}
 	return val;
+}
+
+
+/* Update the "brand personalities" and "promotions" SELECT
+   elements to match the SELECTed organization. */
+function updateOrgBasedSels() {
+	var org = $('#orgname').val();
+	var brandid = '#brand-' + org.replace(/\s/g,'');
+	var branddiv = $(brandid);
+	// TODO also should strip all white space in PHP
+	$('#brand').empty();
+
+	$('#brand').append(branddiv.find("option").clone());
+	
+	// Now same for promotions
+	var promoid = '#promo-' + org.replace(/\s/g,'');
+	var promodiv = $(promoid);
+	// TODO also should strip all white space in PHP
+	$('#promo').empty();
+
+	$('#promo').append(promodiv.find("option").clone());
 }

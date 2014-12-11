@@ -41,13 +41,48 @@ class Organization {
 		$this->promotions = array();
 	}
 	
+	/** Returns the organization with the specified name, or null */
+	public static function getByName ($nam) {
+		reset (Organization::$organizations);
+		while (list($key, $org) = each(Organization::$organizations)) {
+			if ($org->name == $nam)
+				return $org;
+		}
+		return null;
+	}
+	
 	public function addBrand($bname) {
-		$brandIdentities[] = $bname;
+		$this->brandIdentities[] = $bname;
 	}
 	
 	public function addPromotion($pname) {
-		$promotions[] = $pname;
+		$this->promotions[] = $pname;
 	}
+	
+	/* This function creates a div element holding option elements for
+	   the organization's brand identities.
+	   The id of the div is brand-[orgname] */
+	public function insertBrandIdentities () {
+		echo ("<div id='brand-" . $this->name . "'>\n");
+		reset($this->brandIdentities);
+		while (list($key, $brand) = each($this->brandIdentities)) {
+			echo ("<option>" . $brand . "</option>\n"); 
+		}
+		echo ("</div>\n");
+	}
+
+	/* This function creates a div element holding option elements for
+	   the organization's promotion types.
+	   The id of the div is promo-[orgname] */
+	public function insertPromotions () {
+		echo ("<div id='promo-" . $this->name . "'>\n");
+		reset($this->promotions);
+		while (list($key, $promo) = each($this->promotions)) {
+			echo ("<option>" . $promo . "</option>\n"); 
+		}
+		echo ("</div>\n");
+	}
+
 }
 
 function readOrganizationFile ($path) {
@@ -71,6 +106,9 @@ function readOrganizationFile ($path) {
 		else if ($lineType == 'promotion') {
 			$currentOrg->addPromotion($lineVal);
 		}
+//		ob_start();
+//		var_dump($currentOrg);
+//		error_log(ob_get_clean());
 	}
 	fclose($orgFile);
 }

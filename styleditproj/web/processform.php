@@ -9,7 +9,11 @@ require_once('bin/xmlfile.php');
 
 error_reporting(E_WARNING);
 
-
+/* Globals to save the organization, brand, and promo so we can set the
+   appropriate file path. */
+$g_org = "";
+$g_brand = "";
+$g_promo = "";
 
 
 
@@ -22,7 +26,7 @@ function escapeTags ($xml) {
 
 function buildFromForm () {
 	$styleatt .= " name=" . '"' . $_POST["stylename"] . '"';
-	$content = "";
+	$content = buildHeadContent();
 	
 	// Loop through all style segments by counting up the suffix
 	// till we don't find a name with that suffix.
@@ -35,6 +39,32 @@ function buildFromForm () {
 		}
 	}
 	return XMLFile::wrapContentWithAtts ($content, "styleSet", $styleatt);
+}
+
+/* Build the one-time content that precedes the styles. */
+function buildHeadContent() {
+	global $g_org, $g_brand, $g_promo;
+	// First the width and height of the whole piece
+	$wid = $_POST["promowidth"];
+	$ht = $_POST["promoheight"];
+	$g_org = $_POST["orgname"];
+	$g_brand = $_POST["brand"];
+	$g_promo = $_POST["promo"];
+	$widElem = XMLFile::wrapContent ($wid, "x");
+	$htElem = XMLFile::wrapContent ($ht, "y");
+	$content = XMLFile::wrapContent ($widElem . $htElem, "dimensions");
+
+	// Then the organization, brand identity, and promotion.
+	$content .= XMLFile::wrapContent ($g_org, "org");
+	$content .= XMLFile::wrapContent ($g_brand, "brand");
+	$content .= XMLFile::wrapContent ($g_promo, "promo");
+	return $content;
+}
+
+/* Remove all white space from a name, so it makes a more friendly
+   ID and directory name */
+function whiteOut ($s) {
+	return preg_replace('/\s+/', '', $s);
 }
 
 /* Need to grab stuff from this to put into a loop for each style segment */
@@ -110,11 +140,9 @@ function buildTextContent ($n) {
 
 /* We have an SVG selection. Build its XML. */
 function buildSVGContent ($n) {
-	error_log("buildSVGContent");
 	$content = dimensionContent ($n);
 	$content .= anchorContent ($n);
 	$svg = $_POST[appendSuffix("svg", $n)];
-	error_log("svg: " . $svg);
 	$content .= $svg . "\n";
 	$svgparamnames = $_POST[appendSuffix("svgparamnames", $n)];
 	$svgparamvalues = $_POST[appendSuffix("svgparamvalues", $n)];
@@ -126,7 +154,6 @@ function buildSVGContent ($n) {
 		$content .= XMLFile::wrapContent ($nameElement . $valElement, "param");
 		
 	}
-	error_log ("SVG content: " . $content);
 	return XMLFile::wrapContent ($content, "svgdata");
 }
 
@@ -200,10 +227,11 @@ function anchorContent ($n) {
 /* Write the XML. This will throw an exception if the file already 
    exists or anything else goes wrong. On success it returns the file name. */
 function saveXML ($xml) {
+	global $g_org, $g_brand, $g_promo;
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
-		$xmlf->writeFile($xml);
+		$xmlf->writeFile($g_org, $g_brand, $g_promo, $xml);
 		return $filename;
 	}
 	catch (Exception $e) {

@@ -60,15 +60,26 @@ if ($errparm != NULL) {
 <table id="globalfields">
 <tr><td>Organization:</td>
 <td>
-	<select name="orgname" onchange="updateOrgBasedSels();">
+	<select name="orgname" id="orgname" onchange="updateOrgBasedSels();">
 <?php
 	/* Fill in the organizations pulldown menu */ 
+	reset (Organization::$organizations);
 	while (list($key, $org) = each(Organization::$organizations)) {
 		echo ("<option>" . $org->name . "</option>\n");
 	}
 ?>
 	</select>
 </td</tr>
+<tr><td>Brand identity:</td>
+<td>
+	<select name="brand" id="brand">
+	</select>
+</td></tr>
+<tr><td>Promotion:</td>
+<td>
+	<select name="promo" id="promo">
+	</select>
+</td></tr>
 <tr><td>
 Style set name:</td> <td><input id="stylename" class="textbox" type="text" name="stylename" required>
 </td></tr>
@@ -212,6 +223,7 @@ Parameter(s):
 	<select name="font">
 <?php
 	/* Fill in the font pulldown menu */
+	reset (FontFile::$fonts);
 	while (list($key, $val) = each(FontFile::$fonts)) {
 		echo ("<option>$val</option>\n");
 	}
@@ -289,8 +301,29 @@ Parameter(s):
 
 </div>	<!-- End formbank -->
 
+<div id="brandbank" class="hidden">
+<?php
+	/* Build a set of divs which contain the brand identity menu options
+	   for each organization */
+	error_log ("Populating brand identities");
+	reset (Organization::$organizations);
+	while (list($key, $org) = each(Organization::$organizations)) {
+		$org->insertBrandIdentities();
+	}
+?>
+</div>	<!-- End brandbank -->
 
-
+<div id="promobank" class="hidden">
+<?php
+	/* Build a set of divs which contain the promotion menu options
+	   for each organization */
+	error_log("Populating promotions");
+	reset (Organization::$organizations);
+	while (list($key, $org) = each(Organization::$organizations)) {
+		$org->insertPromotions();
+	}
+?>
+</div>	<!-- End promobank -->
 
 
 <!-- Put scripts at end for faster load -->
