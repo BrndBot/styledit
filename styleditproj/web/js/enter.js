@@ -39,6 +39,12 @@ $(function () {
 });
 
 
+function cloneTemplate(sel) {
+	var contents = sel.html();
+	var copy = $('<div></div>');
+	$('body').append(copy.append(contents));
+	return copy;
+}
 
 /* styleTypeUpdate rips out the old contents to replace them with a copy of
    the appropriate div. The first part of a style's form fields is

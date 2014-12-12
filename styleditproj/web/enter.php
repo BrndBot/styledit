@@ -69,7 +69,7 @@ if ($errparm != NULL) {
 	}
 ?>
 	</select>
-</td</tr>
+</td></tr>
 <tr><td>Brand identity:</td>
 <td>
 	<select name="brand" id="brand">
@@ -93,13 +93,13 @@ Overall height: </td> <td><input id="promoheight" class="textbox" type="number" 
 
 <ul class="nobullet">
 <li >
-<input type="submit" class="submitbutton" value="Submit" ">
+<input type="submit" class="submitbutton" value="Submit" >
 </li>
 </ul>
 </form>
 
 
-<?
+<?php
 /* The following div is a bank from which form elements can be copied as needed for each
    style that's added. It is always hidden.
    
@@ -347,10 +347,6 @@ Parameter(s):
 
 <script type="text/JavaScript"
 	src="http://code.jquery.com/jquery-1.11.1.js"></script>
-
-<script type-"text/JavaScript">
-console.log("ECHO echo echo echo");
-</script>
 
 <script type="text/javascript" src="js/enter.js"></script>
 
