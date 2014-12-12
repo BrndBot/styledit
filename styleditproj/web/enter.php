@@ -15,7 +15,7 @@ session_start();
 include('bin/sessioncheck.php');
 if (!sessioncheck())
 	return;
-
+error_log("enter.php");
 ?>
 
 
@@ -305,7 +305,6 @@ Parameter(s):
 <?php
 	/* Build a set of divs which contain the brand identity menu options
 	   for each organization */
-	error_log ("Populating brand identities");
 	reset (Organization::$organizations);
 	while (list($key, $org) = each(Organization::$organizations)) {
 		$org->insertBrandIdentities();
@@ -317,7 +316,6 @@ Parameter(s):
 <?php
 	/* Build a set of divs which contain the promotion menu options
 	   for each organization */
-	error_log("Populating promotions");
 	reset (Organization::$organizations);
 	while (list($key, $org) = each(Organization::$organizations)) {
 		$org->insertPromotions();
@@ -325,6 +323,25 @@ Parameter(s):
 ?>
 </div>	<!-- End promobank -->
 
+<?php
+	/* If the session variables 'org', 'brand' and 'promo' are set, 
+	   put them into divs with corresponding IDs */
+	if (isset(Organization::$selectedOrg)) {
+		echo("<div class=\"hidden\" id=\"selectedorg\">" .
+			Organization::$selectedOrg .
+			"</div>\n");
+	} 
+	if (isset(Organization::$selectedBrand)) {
+		echo("<div class=\"hidden\" id=\"selectedbrand\">" .
+			Organization::$selectedBrand .
+			"</div>\n");
+	} 
+	if (isset(Organization::$selectedPromo)) {
+		echo("<div class=\"hidden\" id=\"selectedpromo\">" .
+			Organization::$selectedPromo .
+			"</div>\n");
+	} 
+?>
 
 <!-- Put scripts at end for faster load -->
 

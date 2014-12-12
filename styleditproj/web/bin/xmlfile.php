@@ -38,6 +38,7 @@ var $fileName;
 			throw new Exception ('File already exists.');
 		}
 		$xmlfile = fopen ($fPath, "x");
+		error_log ("writeFile 1");
 		if (!$xmlfile) {
 			throw new Exception ('Error creating file.');
 		}
@@ -48,6 +49,7 @@ var $fileName;
 			fclose($xmlfile);
 			throw $e;
 		}
+		error_log ("writeFile 2");
 		fclose ($xmlfile);
 	}
 	

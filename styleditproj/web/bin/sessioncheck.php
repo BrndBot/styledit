@@ -10,6 +10,7 @@
  */
 
 require_once ('bin/orgfile.php');
+require_once ('bin/fontfile.php');
 
 /* Automatically kick the user to the login page if no session with a user */
 function sessioncheck () {
@@ -18,11 +19,23 @@ function sessioncheck () {
 		return NULL;
 	}
 	else {
+//		ob_start();
+//		var_dump($_SESSION);
+//		error_log(ob_get_clean());
 		if (array_key_exists ('orgs', $_SESSION)) {
 			Organization::$organizations = $_SESSION['orgs'];
 		}
 		if (array_key_exists ('fonts', $_SESSION)) {
 			FontFile::$fonts = $_SESSION['fonts'];
+		}
+		if (array_key_exists ('org', $_SESSION)) {
+			Organization::$selectedOrg = $_SESSION['org'];
+		}
+		if (array_key_exists ('brand', $_SESSION)) {
+			Organization::$selectedBrand = $_SESSION['brand'];
+		}
+		if (array_key_exists ('promo', $_SESSION)) {
+			Organization::$selectedPromo = $_SESSION['promo'];
 		}
 		return true;
 	}

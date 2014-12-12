@@ -6,6 +6,9 @@
 */
 
 require_once('bin/xmlfile.php');
+require_once('bin/orgfile.php');
+
+session_start ();
 
 error_reporting(E_WARNING);
 
@@ -232,6 +235,10 @@ function saveXML ($xml) {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
 		$xmlf->writeFile($g_org, $g_brand, $g_promo, $xml);
+		Organization::$selectedOrg = $g_org;
+		$_SESSION['org'] = $g_org;
+		$_SESSION['brand'] = $g_brand;
+		$_SESSION['promo'] = $g_promo;
 		return $filename;
 	}
 	catch (Exception $e) {

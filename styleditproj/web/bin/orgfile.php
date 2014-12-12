@@ -31,6 +31,9 @@ class Organization {
 	var $promotions;
 	
 	public static $organizations;
+	public static $selectedOrg;
+	public static $selectedBrand;
+	public static $selectedPromo;
 	
 	public function __construct($name) {
 		if (!isset (Organization::$organizations)) {

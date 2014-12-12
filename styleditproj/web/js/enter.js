@@ -34,8 +34,10 @@ $(function () {
 	blockInfoDiv = $('#formbank .blockinfo');
 	mainForm = $('#mainform');
 	addFirstStyle();
+	setSelectedOrg();
 	updateOrgBasedSels();
 });
+
 
 
 /* styleTypeUpdate rips out the old contents to replace them with a copy of
@@ -179,16 +181,36 @@ function suffixName (nam, n) {
 	return val;
 }
 
+/* Use the hidden "selectedorg" div to set the initial value for the
+ * organization. orgname is the ID of the select element.
+ */
+function setSelectedOrg() {
+	savedorg = $('#selectedorg');
+	if (savedorg.length > 0) {
+		selectIfExists($('#orgname'), savedorg.text());
+//		$('#orgname').val(savedorg.text());
+	}
+}
+
+function selectIfExists(sel, option) {
+	sel.children().each(function() {
+		if ($(this).text() == option) {
+			sel.val(option);
+			return;
+		}
+	});
+}
 
 /* Update the "brand personalities" and "promotions" SELECT
-   elements to match the SELECTed organization. */
+   elements to match the SELECTed organization. If there are
+   saved values, apply those if possible (which it may not
+   be if the organization has changed). */
 function updateOrgBasedSels() {
 	var org = $('#orgname').val();
 	var brandid = '#brand-' + org.replace(/\s/g,'');
 	var branddiv = $(brandid);
-	// TODO also should strip all white space in PHP
-	$('#brand').empty();
 
+	$('#brand').empty();
 	$('#brand').append(branddiv.find("option").clone());
 	
 	// Now same for promotions
@@ -196,6 +218,16 @@ function updateOrgBasedSels() {
 	var promodiv = $(promoid);
 	// TODO also should strip all white space in PHP
 	$('#promo').empty();
-
 	$('#promo').append(promodiv.find("option").clone());
+	
+	// Now set to the saved values, if available
+	savedbrand = $('#selectedbrand');
+	if (savedbrand.length > 0) {
+		selectIfExists($('#brand'), savedbrand.text());
+	}
+	savedpromo = $('#selectedpromo');
+	if (savedpromo.length > 0) {
+		selectIfExists($('#promo'), savedpromo.text());
+	}
+	
 }

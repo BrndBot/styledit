@@ -26,7 +26,9 @@ try {
 		
 		readFontFile ("config/fonts.dat");
 		$_SESSION['fonts'] = FontFile::$fonts;
-		error_log("font 0 = " . FontFile::$fonts[0]);
+		
+		// org, brand, and promo are not set on login
+		
 		header ("Location: enter.php", true, 302);
 		return;
 	}
