@@ -22,17 +22,15 @@ ul.nobullet { list-style-type: none; }
 
 .hidden {display: none; }
 
-div.menubar { background-color: #99EEEE; height: 120px;}
+.formlabel {display:block; float:left; width: 140px; }
 
-ul.menubar {list-style-type: none; }
-
-ul.menubar li {float: left; width: 200px; }
-
-.menubaruser {color:blue; font-size: 80%; }
+.smallformlabel {display:block; float:left; width: 25px; }
 
 .paramnamebox {width: 100px; }
 
 .paramvalbox {width: 300px; }
+
+.numberbox { width:90px; }
 
 .submitbutton {background-color: #BBCCFF}
 

@@ -84,10 +84,10 @@ if ($errparm != NULL) {
 Style set name:</td> <td><input id="stylename" class="textbox" type="text" name="stylename" required>
 </td></tr>
 <tr><td>
-Overall width: </td> <td><input id="promowidth" class="textbox" type="number" min="1" name="promowidth" required>
+Overall width: </td> <td><input id="promowidth" class="numberbox" type="number" min="1" name="promowidth" required>
 </td></tr>
 <tr><td>
-Overall height: </td> <td><input id="promoheight" class="textbox" type="number" min="1" name="promoheight" required>
+Overall height: </td> <td><input id="promoheight" class="numberbox" type="number" min="1" name="promoheight" required>
 </td></tr>
 </table>
 
@@ -149,10 +149,10 @@ Overall height: </td> <td><input id="promoheight" class="textbox" type="number" 
 <h4 class="typehdr"></h4>
 <table>
 <tr><td>
-Width: </td> <td><input id="stylewidth" class="textbox" type="number" min="1" name="stylewidth" required>
+Width: </td> <td><input id="stylewidth" class="numberbox" type="number" min="1" name="stylewidth" required>
 </td></tr>
 <tr><td>
-Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" name="styleheight" required>
+Height: </td> <td><input id="styleheight" class="numberbox" type="number" min="1" name="styleheight" required>
 </td></tr>
 <tr>
 <td>Anchor:</td>
@@ -164,7 +164,20 @@ Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" 
 	<option name="br">Bottom right</option>
 </select>
 </td><tr>
+<tr><td>
+Hor offset: </td> <td><input id="hoffset" class="numberbox" type="number" min="0" name="hoffset">
+</td></tr>
+<tr><td>
+Vert offset: </td> <td><input id="voffset" class="numberbox" type="number" min="0" name="voffset">
+</td></tr>
+<tr>
 </table>
+
+<li><label>
+<input type="checkbox" name="hcenter" id="hcenter">
+Center horizontally
+</label>
+</li>
 
 </ul>
 
@@ -180,9 +193,9 @@ Height: </td> <td><input id="styleheight" class="textbox" type="number" min="1" 
 <div class="imageinfo">
 <ul class="nobullet">
 	<li class="imagepath">
-		Image file path: <input class="textbox" type="text" name="imagepath">
+		Image file path: <input class="numberbox" type="text" name="imagepath">
 	<li>
-		Opacity: <input class="textbox" type="number" min="0" max="100" value="100" name="opacity">
+		Opacity: <input class="numberbox" type="number" min="0" max="100" value="100" name="opacity">
 	<li>
 		<label >
 			<input id="multiplycb" type="checkbox" name="multiply">
@@ -217,9 +230,18 @@ Parameter(s):
 <div class="textinfo">
 <ul class="nobullet">
 	<li>
-	Default content: <input class="textbox" type="text" name="textcontent">
+	<span class="formlabel">Default content:</span>
+	<input class="textbox" type="text" name="textcontent">
 	<li>
-	Font:
+	<span class="formlabel">Alignment:</span>
+	<select name="alignment">
+		<option name="left" value="left" selected>Flush left</option>
+		<option name="right" value="right">Flush right</option>
+		<option name="center" value="center">Centered</option>
+		<option name="justified" value="justified">Justified</option>
+	</select>
+	<li>
+	<span class="formlabel">Font:</span>
 	<select name="font">
 <?php
 	/* Fill in the font pulldown menu */
@@ -230,7 +252,7 @@ Parameter(s):
 ?>
 	</select>
 	<li>
-	Point size: <input class="textbox" name="pointsize" type="number" min="0" max="300" required>
+	<span class="formlabel">Point size:</span> <input class="numberbox" name="pointsize" type="number" min="0" max="300" required>
 	<li>
 	<label>
 		<input type="checkbox" name="bold">
@@ -254,7 +276,7 @@ Parameter(s):
 		</table>
 	</li>
 	<li>
-	Color:
+	<span class="formlabel">Color:</span>
 	<select name="palette" onchange="showHideCustom($(this));">
 		<option value="paletteone">Palette 1</option>
 		<option value="palettetwo">Palette 2</option>
@@ -262,7 +284,7 @@ Parameter(s):
 		<option value="palettefour">Palette 4</option>
 		<option value="palettecustom">Custom</option>
 	</select>
-	<li id="palettecustom" style="display:none">
+	<li id="txtpalettecustom" style="display:none">
 	Custom color:<input type="color" name="textcolor" value="#000000">
 </ul>
 </div>		<!-- textinfo -->
@@ -270,7 +292,7 @@ Parameter(s):
 <div class="blockinfo">
 <ul class="nobullet">
 	<li>
-	Color:
+	<span class="formlabel">Color:</span>
 	<select name="palette" onchange="showHideCustom($(this));">
 		<option value="paletteone">Palette 1</option>
 		<option value="palettetwo">Palette 2</option>
@@ -278,8 +300,27 @@ Parameter(s):
 		<option value="palettefour">Palette 4</option>
 		<option value="palettecustom">Custom</option>
 	</select>
-	<li id="palettecustom" style="display:none">
+	<li id="blkpalettecustom" style="display:none">
 	Custom color:<input type="color" name="blockcolor" value="#000000">
+	<li>
+	<label class="dropshadow">
+		<input type="checkbox" name="dropshadow">
+		Drop shadow
+	</label>
+	<li class="dropshadinfo">
+		<table style="padding-left:32px;">
+			<tr><td>H:</td><td> <input id="blockdropshadh" name="blockdropshadh" type="number" min="0"></td></tr>
+			<tr><td>V:</td><td> <input id="blockdropshadv" name="blockdropshadv" type="number" min="0"></td></tr>
+			<tr><td>Blur:</td><td> <input id="blockdropshadblur" name="blockdropshadblur" type="number" min="0"></td></tr>
+		</table>
+	</li>
+	<li>
+		Opacity: <input class="numberbox" type="number" min="0" max="100" value="100" name="opacity">
+	<li>
+		<label >
+			<input id="multiplycb" type="checkbox" name="multiply">
+			Multiply
+		</label>
 </ul>
 </div>		<!-- blockinfo -->
 

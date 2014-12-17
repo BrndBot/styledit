@@ -33,11 +33,14 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
+			<xs:element name="offset" type="dimensionType"/>
+			<xs:element name="hCenter" minOccurs="0" type="emptyElement"/>
 			<xs:element name="textContent" />
+			<xs:element name="alignment" type="textAlignType"/>
 			<xs:element name="font" />
 			<xs:element name="size" />
-			<xs:element name="bold" minOccurs="0"/>
-			<xs:element name="italic" minOccurs="0"/>
+			<xs:element name="bold" minOccurs="0" type="emptyElement"/>
+			<xs:element name="italic" minOccurs="0" type="emptyElement"/>
 			<xs:element name="dropshadow" type="dropshadowType" minOccurs="0"/>
 			<xs:element name="palette" type="paletteType"/>
 			<xs:element name="textcolor" minOccurs="0"/>
@@ -48,7 +51,9 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
-			<xs:element name="svg" minOccurs="1"/>
+			<xs:element name="offset" type="dimensionType"/>
+			<xs:element name="hCenter" minOccurs="0" type="emptyElement"/>
+			<xs:element name="svg" />
 			<xs:element name="param" type="svgParam" minOccurs="0" maxOccurs="unbounded">
 			</xs:element>
 		</xs:sequence>
@@ -58,6 +63,8 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
+			<xs:element name="offset" type="dimensionType"/>
+			<xs:element name="hCenter" minOccurs="0" type="emptyElement"/>
 			<xs:element name="imagepath"/>
 			<xs:element name="opacity" type="xs:decimal"/>
 			<xs:element name="multiply" minOccurs="0"/>
@@ -68,6 +75,8 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
+			<xs:element name="offset" type="dimensionType"/>
+			<xs:element name="hCenter" minOccurs="0" type="emptyElement"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -75,6 +84,12 @@
 		<xs:sequence>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
+			<xs:element name="offset" type="dimensionType"/>
+			<xs:element name="hCenter" minOccurs="0" type="emptyElement"/>
+			<xs:element name="blockcolor" minOccurs="0"/>
+			<xs:element name="dropshadow" type="dropshadowType" minOccurs="0"/>
+			<xs:element name="opacity" type="xs:decimal"/>
+			<xs:element name="multiply" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -105,6 +120,15 @@
 		</xs:restriction>
 	</xs:simpleType>
 	
+	<xs:simpleType name="textAlignType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="left"/>
+			<xs:enumeration value="right"/>
+			<xs:enumeration value="center"/>
+			<xs:enumeration value="justified"/>
+		</xs:restriction>
+	</xs:simpleType>
+		
 	
 	<xs:complexType name="dimensionType">
 		<xs:sequence>
@@ -121,5 +145,8 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+	
+	<xs:complexType name="emptyElement"/>
+	
 	
 </xs:schema>

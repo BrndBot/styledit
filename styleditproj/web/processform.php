@@ -93,8 +93,7 @@ function buildSegment ($n) {
 			$content = buildLogoContent($n);
 			break;
 	}
-	$styleatt = "name=" . '"' . $_POST["stylename"] . '"';
-	return XMLFile::wrapContentWithAtts ($content, "style", $styleatt);
+	return XMLFile::wrapContent ($content, "style");
 }
 
 /* Append the suffix to a name */
@@ -104,14 +103,17 @@ function appendSuffix ($name, $n) {
 
 /* We have a text selection. Build its XML. */
 function buildTextContent ($n) {
-	$content = dimensionContent ($n);
-	$content .= anchorContent ($n);
+	error_log("buildTextContent");
+	$content = buildCommonContent ($n);
 	$defaultText = $_POST[appendSuffix("textcontent",$n)];
 	if ($defaultText) {
 		$content .= XMLFile::wrapContent ($defaultText, "default");
 	}
 	$fontOption = $_POST[appendSuffix("font", $n)];
 	$content .= XMLFile::wrapContent($fontOption, "font");
+	$alignOption = $_POST[appendSuffix("alignment", $n)];
+	$content .= XMLFile::wrapContent($alignOption, "alignment");
+	error_log("buildTextContent 2");
 	$pointSize = $_POST[appendSuffix("pointsize", $n)];
 	$content .= XMLFile::wrapContent($pointSize, "size");
 
@@ -141,10 +143,18 @@ function buildTextContent ($n) {
 		
 }
 
-/* We have an SVG selection. Build its XML. */
-function buildSVGContent ($n) {
+function buildCommonContent ($n) {
 	$content = dimensionContent ($n);
 	$content .= anchorContent ($n);
+	$content .= offsetContent ($n);
+	$content .= hCenterContent ($n);
+	return $content;
+}
+
+
+/* We have an SVG selection. Build its XML. */
+function buildSVGContent ($n) {
+	$content = buildCommonContent ($n);
 	$svg = $_POST[appendSuffix("svg", $n)];
 	$content .= $svg . "\n";
 	$svgparamnames = $_POST[appendSuffix("svgparamnames", $n)];
@@ -162,8 +172,7 @@ function buildSVGContent ($n) {
 
 /* We have an image selection. Build its XML. */
 function buildImageContent ($n) {
-	$content = dimensionContent ($n);
-	$content .= anchorContent ($n);
+	$content = buildCommonContent ($n);
 	$content .= XMLFile::wrapContent ($_POST[appendSuffix("imagepath",$n)], "path");
 	$content .= XMLFile::wrapContent ($_POST[appendSuffix("opacity",$n)], "opacity");
 	if ($_POST[appendSuffix("multiply", $n)]) {
@@ -175,15 +184,32 @@ function buildImageContent ($n) {
 
 /* We have a block selection. Build its XML. */
 function buildBlockContent ($n) {
-	$content = dimensionContent ($n);
-	$content .= anchorContent ($n);
+	$content = buildCommonContent ($n);
+	$paletteOption = $_POST[appendSuffix("palette", $n)];
+	$content .= XMLFile::wrapContent($paletteOption, "palette");
+	if ($paletteOption == 'palettecustom') {
+		$customColor = $_POST[appendSuffix("blockcolor", $n)];
+		$content .= XMLFile::wrapContent ($customColor, "blockcolor");
+	}
+	if ($_POST[appendSuffix("dropshadow", $n)]) {
+		$h = $_POST[appendSuffix("blockdropshadh", $n)];
+		$v = $_POST[appendSuffix("blockdropshadv", $n)];
+		$blur = $_POST[appendSuffix("blockdropshadblur", $n)];
+		$dropContent = XMLFile::wrapContent ($h, "h", "2");
+		$dropContent .= XMLFile::wrapContent ($v, "v", "2");
+		$dropContent .= XMLFile::wrapContent ($blur, "blur", "2");
+		$content .= XMLFile::wrapContent ($dropContent, "dropshadow");
+	}
+	$content .= XMLFile::wrapContent ($_POST[appendSuffix("opacity",$n)], "opacity");
+	if ($_POST[appendSuffix("multiply", $n)]) {
+		$content .= XMLFile::emptyTag("multiply");
+	}
 	return XMLFile::wrapContent ($content, "block");	
 }
 
 /* We have a logo selection. Build its XML. */
 function buildLogoContent ($n) {
-	$content = dimensionContent ($n);
-	$content .= anchorContent ($n);
+	$content = buildCommonContent ($n);
 	if ($_POST[appendSuffix("dropshadow", $n)]) {
 		$h = $_POST[appendSuffix("logodropshadh", $n)];
 		$v = $_POST[appendSuffix("logodropshadv", $n)];
@@ -224,6 +250,31 @@ function anchorContent ($n) {
 			break;
 	}
 	return XMLFile::wrapContent ($a, "anchor");	
+}
+
+/* Offset content is common to all style types. */
+function offsetContent ($n) {
+	$h = $_POST[appendSuffix("hoffset", $n)];
+	if (!$h)
+		$h = "0";
+	$v = $_POST[appendSuffix("voffset", $n)];
+	if (!$v)
+		$v = "0";
+	$hElem = XMLFile::wrapContent ($h, "x");
+	$vElem = XMLFile::wrapContent ($v, "y");
+	return XMLFile::wrapContent ($hElem . $vElem, "offset");
+}
+
+/* hCenter is common to all style types. Return the
+   hCenter element if the hcenter box was checked, otherwise 
+   an empty string.
+*/
+function hCenterContent ($n) {
+	$content = "";
+	if ($_POST[appendSuffix("hcenter", $n)]) {
+		$content .= XMLFile::emptyTag("hCenter");
+	}
+	return $content;
 }
 
 
