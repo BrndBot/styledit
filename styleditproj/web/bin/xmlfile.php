@@ -115,16 +115,19 @@ var $fileName;
 		return $val;
 	}
 	
-	/* An intruder can't do much, but snooping through the filesystem is a possibility. */
+	/* An intruder can't do much, but snooping through the filesystem or smuggling
+	   in a script in the filename is a possibility. */
 	private static function isFilenameEvil ($fname) {
 		// Argh. strpos may return either a number or false.
 		$slashpos = strpos($fname, "/");
 		$backslashpos = strpos($fname, "\\");
 		$dotdotpos = strpos($fname, "..");
 		$tildepos = strpos($fname, "~");
+		$ltpos = strpos($fname, "<");
 		return ($slashpos === 0 ||
 			$backslashpos === 0 ||
 			!($dotdotpos === false) ||
+			!($ltpos === false) ||
 			!($tildepos === false));
 	}
 }
