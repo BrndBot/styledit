@@ -21,7 +21,7 @@ error_log("enter.php");
 
 <html lang="en">
 <head>
-	<title>Enter Style</title>
+	<title>Enter Styleset</title>
 	<link href="css/styles.css" rel="stylesheet">
 	
 </head>
@@ -50,7 +50,9 @@ if ($errparm != NULL) {
 }
 */
 ?>
-
+<ul class="nobullet">
+<li><a href="entermodel.php">Enter model</a>
+</ul>
 <h1>Enter style information</h1>
 
 <form id="mainform" 
@@ -158,10 +160,10 @@ Height: </td> <td><input id="styleheight" class="numberbox" type="number" min="1
 <td>Anchor:</td>
 <td>
 <select name="anchor">
-	<option name="tl">Top left</option>
-	<option name="tr">Top right</option>
-	<option name="bl">Bottom left</option>
-	<option name="br">Bottom right</option>
+	<option value="tl">Top left</option>
+	<option value="tr">Top right</option>
+	<option value="bl">Bottom left</option>
+	<option value="br">Bottom right</option>
 </select>
 </td><tr>
 <tr><td>
@@ -208,7 +210,8 @@ Center horizontally
 
 <div class="svginfo">
 
-<textarea name="svg" rows="4" cols="60" placeholder="<svg>...</svg>" >
+<textarea name="svg" rows="4" cols="60" placeholder="<svg>...</svg>"
+	title="Paste SVG here, e.g., from Illustrator" >
 </textarea>
 
 <br>

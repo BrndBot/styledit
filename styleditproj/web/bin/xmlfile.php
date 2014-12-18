@@ -9,6 +9,7 @@
 class XMLFile {
 
 const CREATED_STYLES_DIR = '/var/brndbot/styles/';
+const CREATED_MODELS_DIR = '/var/brndbot/models/';
 const XML_DECL = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
 var $fileName;
@@ -27,18 +28,16 @@ var $fileName;
 	  *  This code assumes slash as a file separator and won't work on
 	  *  Windows.
 	  */
-	public function writeFile ($org, $brand, $promo, $content) {
+	public function writeFile ($dir, $content) {
+		error_log("writeFile to " . $dir);
 		if (!isset($this->fileName)) {
 			throw new Exception ('Invalid file name.');
 		}
-		$dir = $this->makePath($org, $brand, $promo);
 		$fPath = $dir . "/" . $this->fileName;
-		error_log ("Writing " . $fPath);
 		if (file_exists($fPath)) {
 			throw new Exception ('File already exists.');
 		}
 		$xmlfile = fopen ($fPath, "x");
-		error_log ("writeFile 1");
 		if (!$xmlfile) {
 			throw new Exception ('Error creating file.');
 		}
@@ -49,12 +48,11 @@ var $fileName;
 			fclose($xmlfile);
 			throw $e;
 		}
-		error_log ("writeFile 2");
 		fclose ($xmlfile);
 	}
 	
-	/* Create directory path. Returns the path without a slash at the end. */
-	private function makePath ($org, $brand, $promo) {
+	/* Create directory path for a style. Returns the path without a slash at the end. */
+	public function makeStylePath ($org, $brand, $promo) {
 		// May need to create parent directories
 		$path = XMLFile::CREATED_STYLES_DIR . $this->whiteOut($org);
 		if (!file_exists ($path)) 
@@ -63,6 +61,16 @@ var $fileName;
 		if (!file_exists ($path)) 
 			mkdir($path);
 		$path .= "/" . $this->whiteOut($promo);
+		if (!file_exists ($path)) 
+			mkdir($path);
+		return $path;
+	}
+
+	/* Create directory path for a model. Returns the path without a slash at the end. */
+	public function makeModelPath ($org) {
+		// May need to create parent directory
+		$path = XMLFile::CREATED_MODELS_DIR . $this->whiteOut($org);
+		error_log ("makeModelPath for " . $path);
 		if (!file_exists ($path)) 
 			mkdir($path);
 		return $path;

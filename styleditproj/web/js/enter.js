@@ -1,4 +1,8 @@
-
+/*	enter.js
+ *  CONFIDENTIAL
+ *  
+ *  All rights reserved by Brndbot, Ltd. 2014
+*/
 
 var styleTemplateDiv;
 var textInfoDiv;

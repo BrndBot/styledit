@@ -8,6 +8,7 @@
 	<xs:element name="styleSet">
 		<xs:complexType>
 			<xs:sequence>
+				<xs:element name="model" minOccurs="0"/>
 				<xs:element name="dimensions" type="dimensionType"/>
 				<xs:element name="org"/>
 				<xs:element name="brand"/>
@@ -31,6 +32,7 @@
 	<!-- The five style types -->
 	<xs:complexType name="textElement">
 		<xs:sequence>
+			<xs:element name="modelField" minOccurs="0"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="offset" type="dimensionType"/>

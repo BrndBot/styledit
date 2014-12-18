@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+		targetNamespace="http://www.brndbot.com/schema/BrndbotModel" 
+		xmlns="http://www.brndbot.com/schema/BrndbotModel" 
+		elementFormDefault="qualified">
+
+	<xs:element name="model">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="org"/>
+				<xs:element name="description"/>
+				<xs:element name="category"/>
+				<xs:element name="field" maxOccurs="unbounded" type="fieldType"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="fieldType">
+		<xs:sequence>
+			<xs:element name="type" type="typeType"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	
+	<xs:simpleType name="typeType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="left"/>
+			<xs:enumeration value="right"/>
+			<xs:enumeration value="center"/>
+			<xs:enumeration value="justified"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

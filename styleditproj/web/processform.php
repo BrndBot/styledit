@@ -10,7 +10,7 @@ require_once('bin/orgfile.php');
 
 session_start ();
 
-error_reporting(E_WARNING);
+//error_reporting(E_WARNING);
 
 /* Globals to save the organization, brand, and promo so we can set the
    appropriate file path. */
@@ -236,15 +236,19 @@ function anchorContent ($n) {
 	$anchor = $_POST[appendSuffix("anchor", $n)];
 	switch ($anchor) {
 		case "Top left":
+		case "tl":
 			$a = "tl";
 			break;
 		case "Top right":
+		case "tr":
 			$a = "tr";
 			break;
 		case "Bottom left":
+		case "bl":
 			$a = "bl";
 			break;
 		case "Bottom right":
+		case "br":
 		default:
 			$a = "br";
 			break;
@@ -285,7 +289,7 @@ function saveXML ($xml) {
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
-		$xmlf->writeFile($g_org, $g_brand, $g_promo, $xml);
+		$xmlf->writeFile(makeStylePath($g_org, $g_brand, $g_promo), $xml);
 		Organization::$selectedOrg = $g_org;
 		$_SESSION['org'] = $g_org;
 		$_SESSION['brand'] = $g_brand;
@@ -318,6 +322,6 @@ function saveXML ($xml) {
 		echo ("<p>Form has been submitted successfully, saved as " . $filename . ".</p>");
 	}
 ?>
-</pre>
-<p><a href="enter.php">Enter another style</p>
+
+<p><a href="enter.php">Enter another style</a></p>
 </body>
