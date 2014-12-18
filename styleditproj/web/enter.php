@@ -8,6 +8,7 @@
 
 require_once ('bin/fontfile.php');
 require_once ('bin/orgfile.php');
+require_once ('bin/modelfile.php');
 
 header("Content-type: text/html; charset=utf-8");
 
@@ -49,11 +50,22 @@ if ($errparm != NULL) {
 		echo ("<p class='errormsg'>$errmsg</p>\n");
 }
 */
+	
+$modelparm = $_GET["model"];
+$orgparm = $_GET["org"];
+$modelfile = null;
+
+if ($modelparm && $orgparm) {
+	$modelFile = ModelFile::findModel($modelparm, $orgparm);
+}
+
+	
 ?>
 <ul class="nobullet">
 <li><a href="entermodel.php">Enter model</a>
 </ul>
 <h1>Enter style information</h1>
+
 
 <form id="mainform" 
 		action="processform.php" 
@@ -366,6 +378,23 @@ Parameter(s):
 	}
 ?>
 </div>	<!-- End promobank -->
+
+<!--  Invisible div holding model layout -->
+<div id="modellayout" class="hidden">
+<?php 
+if ($modelFile) {
+	// create a series of spans, each containing the name of a style type.
+	// Should we put the style names in somewhere, just as a guide for
+	// the user?
+	$modelInfo = $modelFile->getModelInfo();
+	$fields = $modelInfo[0];
+	$styles = $modelInfo[1];
+	foreach ($styles as $style) {
+		echo ("<span>" . $style . "</span>\n");
+	}
+}
+?>
+</div>
 
 <?php
 	/* If the session variables 'org', 'brand' and 'promo' are set, 

@@ -123,6 +123,11 @@ var $fileName;
 		return $val;
 	}
 	
+	/* Parse an XML file */
+	public function parse () {
+		return simplexml_load_file($fileName);
+	}
+	
 	/* An intruder can't do much, but snooping through the filesystem or smuggling
 	   in a script in the filename is a possibility. */
 	private static function isFilenameEvil ($fname) {
