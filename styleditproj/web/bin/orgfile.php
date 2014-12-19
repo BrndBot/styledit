@@ -25,10 +25,13 @@ be an organization.
    
 */
 
+require_once('modelfile.php');
+
 class Organization {
 	var $name;
 	var $brandIdentities;
 	var $promotions;
+	var $models;
 	
 	public static $organizations;
 	public static $selectedOrg;
@@ -42,6 +45,7 @@ class Organization {
 		$this->name = $name;
 		$this->brandIdentities = array();
 		$this->promotions = array();
+		$this->models = array();
 	}
 	
 	/** Returns the organization with the specified name, or null */
@@ -82,6 +86,22 @@ class Organization {
 		reset($this->promotions);
 		while (list($key, $promo) = each($this->promotions)) {
 			echo ("<option>" . $promo . "</option>\n"); 
+		}
+		echo ("</div>\n");
+	}
+	
+	/* This function creates a div element holding the model file names
+	   for the organization.
+	*/
+	public function insertModels () {
+		error_log ("insertModels for " . $this->name);
+		echo ("<div id='model-" . $this->name . "' class='hidden'>\n");
+		$models = ModelFile::listModelFiles($this->name);
+		ob_start();
+		var_dump($models);
+		error_log(ob_get_clean());
+		while (list($key, $model) = each($models)) {
+			echo ("<option>" . $model . "</option>\n");
 		}
 		echo ("</div>\n");
 	}

@@ -32,38 +32,62 @@ error_log("enter.php");
 
 <?php
 
-/*
-$errparm = $_GET["err"];
-if ($errparm != NULL) {
-	switch ($errparm) {
-	case "1":
-		$errmsg = "Please specify a clip type.";
-		break;	
-	case "2":
-		$errmsg = "Error writing to the database.";
-		break;
-	default:
-		$errmsg = "Internal error.";
-		break;
-	}
-	if ($errmsg)
-		echo ("<p class='errormsg'>$errmsg</p>\n");
-}
-*/
-	
-$modelparm = $_GET["model"];
-$orgparm = $_GET["org"];
+/* Get URL parameters */	
+$modelparm = null;
+if (array_key_exists("model", $_GET))
+	$modelparm = $_GET["model"];
+$orgparm = null;
+if (array_key_exists("org", $_GET))
+	$orgparm = $_GET["org"];
+
 $modelfile = null;
 
+/* See if the URL specifies a model file */
 if ($modelparm && $orgparm) {
 	$modelFile = ModelFile::findModel($modelparm, $orgparm);
 }
 
-	
 ?>
 <ul class="nobullet">
-<li><a href="entermodel.php">Enter model</a>
+<li><a href="entermodel.php">Switch to a model</a>
 </ul>
+
+<?php
+/* The form for picking a model and reloading the form */
+?>
+<form action="enter.php" accept-charset="UTF-8">
+<h1>Set up form for model</h1>
+<table>
+<tr><td>Organization:</td>
+<td>
+	<select name="org" id="morgname" onchange="modelSelectUpdate();" >
+<?php
+/* Populate the organizations pulldown in the model selection form */
+function fillOrgOptions () {
+	/* Fill in the organizations pulldown menu */
+	reset (Organization::$organizations);
+	while (list($key, $org) = each(Organization::$organizations)) {
+		echo ("<option>" . $org->name . "</option>\n");
+	}
+}
+
+fillOrgOptions();
+?>
+	</select>
+</td></tr>
+<tr><td>
+	Model:
+</td><td>
+	<select name="model" id="mmodel">
+	</select>
+</td></tr>
+</table>
+<div><input type="submit" class="submitbutton" value="Reload" >
+</div>
+</form>
+
+
+
 <h1>Enter style information</h1>
 
 
@@ -76,11 +100,7 @@ if ($modelparm && $orgparm) {
 <td>
 	<select name="orgname" id="orgname" onchange="updateOrgBasedSels();">
 <?php
-	/* Fill in the organizations pulldown menu */ 
-	reset (Organization::$organizations);
-	while (list($key, $org) = each(Organization::$organizations)) {
-		echo ("<option>" . $org->name . "</option>\n");
-	}
+	fillOrgOptions();
 ?>
 	</select>
 </td></tr>
@@ -382,11 +402,11 @@ Parameter(s):
 <!--  Invisible div holding model layout -->
 <div id="modellayout" class="hidden">
 <?php 
-if ($modelFile) {
+if (isset($modelFile)) {
 	// create a series of spans, each containing the name of a style type.
 	// Should we put the style names in somewhere, just as a guide for
 	// the user?
-	$modelInfo = $modelFile->getModelInfo();
+	$modelInfo = $modelFile->getModelInfo($orgparm);
 	$fields = $modelInfo[0];
 	$styles = $modelInfo[1];
 	foreach ($styles as $style) {
@@ -396,6 +416,17 @@ if ($modelFile) {
 ?>
 </div>
 
+<!--  Invisible div holding models for each style -->
+<div id="orgmodels" class="hidden">
+<?php
+	/* Build a set of divs which contain the model file names
+	   for each organization */
+	reset (Organization::$organizations);
+	while (list($key, $org) = each(Organization::$organizations)) {
+		$org->insertModels();
+	}
+?>
+</div>
 <?php
 	/* If the session variables 'org', 'brand' and 'promo' are set, 
 	   put them into divs with corresponding IDs */

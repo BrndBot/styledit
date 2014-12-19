@@ -12,6 +12,7 @@ var logoInfoDiv;
 var blockInfoDiv;
 var mainForm;
 
+/* An aid to debugging. Remove in the final version. */
 window.onerror = function(msg, url, line, col, error) {
    // Note that col & error are new to the HTML 5 spec and may not be 
    // supported in every browser.  It worked for me in Chrome.
@@ -27,6 +28,7 @@ window.onerror = function(msg, url, line, col, error) {
    return suppressErrorAlert;
 };
 
+/* This is done when the page is loaded. */
 $(function () {
 	// Set variables for the style bank blocks, so we
 	// only have to point at them once.
@@ -40,9 +42,11 @@ $(function () {
 	addFirstStyle();
 	setSelectedOrg();
 	updateOrgBasedSels();
+	populateByModel();
+	modelSelectUpdate();
 });
 
-
+/* Not used. Save for possible use later. */
 function cloneTemplate(sel) {
 	var contents = sel.html();
 	var copy = $('<div></div>');
@@ -89,7 +93,6 @@ function styleTypeUpdate(buttn) {
 /* Add the first style */
 function addFirstStyle () {
 	var newInstance = styleTemplateDiv.clone();
-//	$('#mainform').append(newInstance);
 	$('#globalfields').after (newInstance);
 	var checkedButton = newInstance.find('.textstyle');
 	checkedButton.attr('checked', true);
@@ -101,8 +104,6 @@ function addStyle (buttn) {
 	var curInstance = buttn.closest('.styletemplate');
 	var newInstance = styleTemplateDiv.clone();
 	curInstance.after (newInstance);
-	console.log("newInstance:");
-	console.log (newInstance.html);
 	var checkedButton = newInstance.find('.textstyle');
 	checkedButton.attr('checked', true);
 	styleTypeUpdate(checkedButton);
@@ -198,7 +199,7 @@ function setSelectedOrg() {
 	savedorg = $('#selectedorg');
 	if (savedorg.length > 0) {
 		selectIfExists($('#orgname'), savedorg.text());
-//		$('#orgname').val(savedorg.text());
+		selectIfExists($('#morgname'), savedorg.text());
 	}
 }
 
@@ -239,5 +240,59 @@ function updateOrgBasedSels() {
 	if (savedpromo.length > 0) {
 		selectIfExists($('#promo'), savedpromo.text());
 	}
+}
+
+
+/*******************************************************************
+ * Functions for model-driven actions ******************************
+ */
+
+/* If the div #modellayout isn't empty, use its spans as
+ * directions to create the appropriate number and type of
+ * style panels.
+ */
+function populateByModel() {
+	var fields = $('#modellayout').find("span");
+	var fieldStyles = [];
+	var nFields = fields.length;
+	if (nFields == 0)
+		return;
 	
+	fields.each(function () {
+		fieldStyles.push($(this).text());
+	});
+	
+	// Initially there is one style div, but for generality count them
+	// and bring the number up to the number of fields.
+	var existingStyles = $("#mainform .styletemplate");
+	var lastStyle = existingStyles.last();
+	for (i = 0; i < nFields - existingStyles.length; i++) {
+		var newInstance = styleTemplateDiv.clone();
+		lastStyle.after (newInstance);
+		lastStyle = newInstance;
+	}
+	$("#mainform .styletemplate").each(function (n) {
+		if (n < fieldStyles.length) {
+			console.log("Style " + fieldStyles[n]);
+			var checkedButton = $(this).find('.' + fieldStyles[n] + 'style');
+			console.log("checked button found: " + checkedButton.length);
+			checkedButton.attr('checked', true);
+			styleTypeUpdate(checkedButton);
+		}
+	});
+}
+
+/*******************************************************************
+ * Functions for the model selection form **************************
+ */
+
+/* In the model selection form, populate the models pulldown menu
+   based on the selected organization. */
+function modelSelectUpdate () {
+	// Get the set of options which is appropriate for the organization
+	// from a hidden div.
+	var orgid = 'model-' + $('#morgname').val();
+	var modeldiv = $('#orgmodels').find("#" + orgid);
+	$('#mmodel').empty();
+	$('#mmodel').append(modeldiv.find("option").clone());
 }
