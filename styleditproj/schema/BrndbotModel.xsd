@@ -25,10 +25,11 @@
 	
 	<xs:simpleType name="typeType">
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="left"/>
-			<xs:enumeration value="right"/>
-			<xs:enumeration value="center"/>
-			<xs:enumeration value="justified"/>
+			<xs:enumeration value="text"/>
+			<xs:enumeration value="image"/>
+			<xs:enumeration value="svg"/>
+			<xs:enumeration value="logo"/>
+			<xs:enumeration value="block"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

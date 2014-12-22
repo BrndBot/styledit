@@ -13,11 +13,11 @@
 				<xs:element name="org"/>
 				<xs:element name="brand"/>
 				<xs:element name="promo"/>
-				<xs:element name="style">
+				<xs:element name="style"  minOccurs="1" maxOccurs="unbounded">
 					<xs:complexType>
-						<xs:choice minOccurs="1" maxOccurs="unbounded">
+						<xs:choice>
 							<xs:element name="text" type="textElement"/>
-							<xs:element name="svg" type="svgElement"/>
+							<xs:element name="svgdata" type="svgElement"/>
 							<xs:element name="image" type="imageElement"/>
 							<xs:element name="logo" type="logoElement"/>
 							<xs:element name="block" type="blockElement"/>
@@ -25,6 +25,7 @@
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
+			<xs:attribute name="name" type="xs:string"/>
 		</xs:complexType>
 	</xs:element>
 	
