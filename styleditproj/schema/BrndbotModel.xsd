@@ -10,6 +10,7 @@
 				<xs:element name="org"/>
 				<xs:element name="description"/>
 				<xs:element name="category"/>
+				<xs:element name="buttonImage"/>
 				<xs:element name="field" maxOccurs="unbounded" type="fieldType"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string"/>
