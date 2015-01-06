@@ -6,6 +6,9 @@
 */
 
 header("Content-type: text/html; charset=utf-8");
+
+/* Start a fresh session */
+session_unset();
 ?>
 
 <html lang="en">

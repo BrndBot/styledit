@@ -289,7 +289,7 @@ function saveXML ($xml) {
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
-		$xmlf->writeFile(makeStylePath($g_org, $g_brand, $g_promo), $xml);
+		$xmlf->writeFile($xmlf->makeStylePath($g_org, $g_brand, $g_promo), $xml);
 		Organization::$selectedOrg = $g_org;
 		$_SESSION['org'] = $g_org;
 		$_SESSION['brand'] = $g_brand;

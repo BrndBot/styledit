@@ -97,9 +97,9 @@ class Organization {
 		error_log ("insertModels for " . $this->name);
 		echo ("<div id='model-" . $this->name . "' class='hidden'>\n");
 		$models = ModelFile::listModelFiles($this->name);
-		ob_start();
-		var_dump($models);
-		error_log(ob_get_clean());
+		//ob_start();
+		//var_dump($models);
+		//error_log(ob_get_clean());
 		while (list($key, $model) = each($models)) {
 			echo ("<option>" . $model . "</option>\n");
 		}
