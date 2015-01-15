@@ -48,6 +48,8 @@ td.reportnav { width: 100px; }
 
 .dropshadow {text-shadow:2px 2px 2px #888888; }
 
+.fieldname1 {font-size:125%; font-weight: bold; }
+
 input[type='number'] {
     -moz-appearance:textfield;
 }

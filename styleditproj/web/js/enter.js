@@ -252,14 +252,18 @@ function updateOrgBasedSels() {
  * style panels.
  */
 function populateByModel() {
-	var fields = $('#modellayout').find("span");
+	// The modellayout div contains one div for each field, and it
+	// contains two spans, with the style and field names respectively.
+	var fields = $('#modellayout').find("div");
 	var fieldStyles = [];
+	var fieldNames = [];
 	var nFields = fields.length;
 	if (nFields == 0)
 		return;
 	
 	fields.each(function () {
-		fieldStyles.push($(this).text());
+		fieldStyles.push($(this).find(".stylename").text());
+		fieldNames.push($(this).find(".fieldname").text());
 	});
 	
 	// Initially there is one style div, but for generality count them
@@ -275,8 +279,12 @@ function populateByModel() {
 		if (n < fieldStyles.length) {
 			console.log("Style " + fieldStyles[n]);
 			var checkedButton = $(this).find('.' + fieldStyles[n] + 'style');
-			console.log("checked button found: " + checkedButton.length);
+			//console.log("checked button found: " + checkedButton.length);
 			checkedButton.attr('checked', true);
+			var titleText = $(this).find('.fieldname1');
+			titleText.text(fieldNames[n]);
+			titleText.show();
+			$(this).find(".stylesel").hide();	// Style types are fixed, so hide the buttons
 			styleTypeUpdate(checkedButton);
 		}
 	});

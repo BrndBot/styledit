@@ -143,7 +143,8 @@ Overall height: </td> <td><input id="promoheight" class="numberbox" type="number
 <div id="formbank" class="hidden">
 
 <div class="styletemplate">
-<ul class="nobullet" title="Select the type of style">
+<p class="hidden fieldname1">
+<ul class="nobullet stylesel" title="Select the type of style">
 <li>
 	<label>
 		<input type="radio" class="textstyle" 
@@ -270,10 +271,10 @@ Parameter(s):
 	<li>
 	<span class="formlabel">Alignment:</span>
 	<select name="alignment">
-		<option name="left" value="left" selected>Flush left</option>
-		<option name="right" value="right">Flush right</option>
-		<option name="center" value="center">Centered</option>
-		<option name="justified" value="justified">Justified</option>
+		<option  value="left" selected>Flush left</option>
+		<option  value="right">Flush right</option>
+		<option  value="center">Centered</option>
+		<option  value="justified">Justified</option>
 	</select>
 	<li>
 	<span class="formlabel">Font:</span>
@@ -404,13 +405,17 @@ Parameter(s):
 <?php 
 if (isset($modelFile)) {
 	// create a series of spans, each containing the name of a style type.
-	// Should we put the style names in somewhere, just as a guide for
-	// the user?
+	// Store the field names and style types.
 	$modelInfo = $modelFile->getModelInfo($orgparm);
 	$fields = $modelInfo[0];
 	$styles = $modelInfo[1];
-	foreach ($styles as $style) {
-		echo ("<span>" . $style . "</span>\n");
+	for ($i = 0; $i < sizeof($fields); $i++) {
+		$style = $styles[$i];
+		$field = $fields[$i];
+		echo ("<div>");
+		echo ("<span class='stylename'>" . $style . "</span>\n");
+		echo ("<span class='fieldname'>" . $field . "</span>\n");
+		echo ("</div>");
 	}
 }
 ?>

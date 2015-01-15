@@ -13,8 +13,6 @@ require_once('xmlfile.php');
 class ModelFile {
  
 var $fileName;
-
-public static $testing1 = "xyz";		// ****TEST ONLY
  
 	public function __construct($fname) {
 		error_log ("ModelFile constructor, fname = " . $fname);
@@ -44,11 +42,10 @@ public static $testing1 = "xyz";		// ****TEST ONLY
 				$styleTypes[] = trim(dom_import_simplexml($elem->type)->firstChild->data);
 			}
 		}
-		error_log("fieldNames:");
-		ob_start();
-		var_dump($fieldNames);
-		error_log(ob_get_clean());
-		error_log("styleTypes:");
+		//error_log("fieldNames:");
+		//ob_start();
+		//var_dump($fieldNames);
+		//error_log(ob_get_clean());
 		return array ($fieldNames, $styleTypes);
 	}
 	
