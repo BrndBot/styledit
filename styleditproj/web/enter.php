@@ -40,11 +40,15 @@ $orgparm = null;
 if (array_key_exists("org", $_GET))
 	$orgparm = $_GET["org"];
 
-$modelfile = null;
+$modelFile = null;
+
 
 /* See if the URL specifies a model file */
 if ($modelparm && $orgparm) {
 	$modelFile = ModelFile::findModel($modelparm, $orgparm);
+	// create a series of spans, each containing the name of a style type.
+	// Store the field names and style types.
+	$modelFile->loadModelInfo($orgparm);
 }
 
 ?>
@@ -63,15 +67,21 @@ if ($modelparm && $orgparm) {
 	<select name="org" id="morgname" onchange="modelSelectUpdate();" >
 <?php
 /* Populate the organizations pulldown in the model selection form */
-function fillOrgOptions () {
-	/* Fill in the organizations pulldown menu */
-	reset (Organization::$organizations);
-	while (list($key, $org) = each(Organization::$organizations)) {
-		echo ("<option>" . $org->name . "</option>\n");
+function fillOrgOptions ($canLimit) {
+	global $modelFile;
+	if ($canLimit && isset ($modelFile)) {
+		// Fill in only the organization for the selected model
+		echo ("<option>" . $modelFile->organization . "</option>\n");
+	} else {
+		// Fill in the organizations pulldown menu 
+		reset (Organization::$organizations);
+		while (list($key, $org) = each(Organization::$organizations)) {
+			echo ("<option>" . $org->name . "</option>\n");
+		}
 	}
 }
 
-fillOrgOptions();
+fillOrgOptions(false);
 ?>
 	</select>
 </td></tr>
@@ -89,7 +99,12 @@ fillOrgOptions();
 
 
 <h1>Enter style information</h1>
-
+<?php
+if (isset ($modelFile)) {
+	echo ("<div class='selectedmodelname'>Model: " . $modelFile->modelName . "</div>");	
+}
+?>
+<div id="selectedmodel"></div>
 
 <form id="mainform" 
 		action="processform.php" 
@@ -100,7 +115,7 @@ fillOrgOptions();
 <td>
 	<select name="orgname" id="orgname" onchange="updateOrgBasedSels();">
 <?php
-	fillOrgOptions();
+	fillOrgOptions(true);
 ?>
 	</select>
 </td></tr>
@@ -218,9 +233,15 @@ Center horizontally
 
 <div class="varinfo"></div>
 
+<?php
+// If a model has been selected, user can't add or remove fields
+if (!isset ($modelFile)) {
+?>
 	<button type="button" onclick="addStyle($(this));">Add</button>
 	<button type="button" onclick="removeStyle($(this));">Remove</button>
-
+<?php
+}
+?>
 <hr>
 </div>	<!-- styletemplate -->
 
@@ -403,15 +424,13 @@ Parameter(s):
 <!--  Invisible div holding model layout -->
 <div id="modellayout" class="hidden">
 <?php 
-if (isset($modelFile)) {
-	// create a series of spans, each containing the name of a style type.
-	// Store the field names and style types.
-	$modelInfo = $modelFile->getModelInfo($orgparm);
-	$fields = $modelInfo[0];
-	$styles = $modelInfo[1];
-	for ($i = 0; $i < sizeof($fields); $i++) {
-		$style = $styles[$i];
-		$field = $fields[$i];
+
+//	$fields = $modelInfo[0];
+//	$styles = $modelInfo[1];
+if (isset ($modelFile)) {
+	for ($i = 0; $i < sizeof($modelFile->fieldNames); $i++) {
+		$style = $modelFile->styleTypes[$i];
+		$field = $modelFile->fieldNames[$i];
 		echo ("<div>");
 		echo ("<span class='stylename'>" . $style . "</span>\n");
 		echo ("<span class='fieldname'>" . $field . "</span>\n");

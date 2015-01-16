@@ -13,6 +13,10 @@ require_once('xmlfile.php');
 class ModelFile {
  
 var $fileName;
+var $fieldNames;
+var $styleTypes;
+var $modelName;
+var $organization;
  
 	public function __construct($fname) {
 		error_log ("ModelFile constructor, fname = " . $fname);
@@ -24,29 +28,40 @@ var $fileName;
 	   0: The field names
 	   1: The style types
 	*/
-	public function getModelInfo($org) {
+	
+	/* Load up the model information for the organization. */
+	public function loadModelInfo($org) {
 		error_log("getModelInfo, org = " . $org);
 		if (!file_exists($this->fileName))
 			return null;
 
-		$fieldNames = array();
-		$styleTypes = array();
+		$this->fieldNames = array();
+		$this->styleTypes = array();
 		
 		$simpleXML = simplexml_load_file($this->fileName);
 		error_log ("returned from simplexml_load_file");
 		// The field elements are one level down
 		foreach ($simpleXML->children() as $elem) {
-			error_log ("Checking element " . $elem->getName());
 			if ($elem->getName() == "field") {
-				$fieldNames[] = trim(dom_import_simplexml($elem->name)->firstChild->data);
-				$styleTypes[] = trim(dom_import_simplexml($elem->type)->firstChild->data);
+				$this->fieldNames[] = trim(dom_import_simplexml($elem->name)->firstChild->data);
+				$this->styleTypes[] = trim(dom_import_simplexml($elem->type)->firstChild->data);
+			} else if ($elem->getName() == "org") {
+				$this->organization = trim(dom_import_simplexml($elem)->firstChild->data);
+				error_log ("Organization for model is " . $this->organization);
 			}
 		}
-		//error_log("fieldNames:");
+		// Find the name attribute
+		foreach ($simpleXML->attributes() as $attr => $val) {
+			error_log ("Checking attribute " . $attr);
+			if ($attr == "name") {
+				error_log ("Model name is " . $val);
+				$this->modelName = $val;
+			}
+		}
 		//ob_start();
 		//var_dump($fieldNames);
 		//error_log(ob_get_clean());
-		return array ($fieldNames, $styleTypes);
+		//return array ($fieldNames, $styleTypes);
 	}
 	
 	/* Get the names of the model files for the named organization. */

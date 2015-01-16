@@ -50,6 +50,8 @@ td.reportnav { width: 100px; }
 
 .fieldname1 {font-size:125%; font-weight: bold; }
 
+.selectedmodelname {font-size: 200%; font-weight: bold; color: #FF2222;}
+
 input[type='number'] {
     -moz-appearance:textfield;
 }
