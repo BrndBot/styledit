@@ -53,7 +53,7 @@ if ($modelparm && $orgparm) {
 
 ?>
 <ul class="nobullet">
-<li><a href="entermodel.php">Switch to a model</a>
+<li><a href="entermodel.php">Switch to model editor</a>
 </ul>
 
 <?php
