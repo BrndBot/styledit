@@ -196,8 +196,19 @@ Overall height: </td> <td><input id="promoheight" class="numberbox" type="number
 		Logo
 	</label>
 <li>&nbsp;</li>
-<h4 class="typehdr"></h4>
+</ul> <!--  stylesel -->
+<?php
+/* The .typehdr div is the part of the style template that doesn't change.
+ * IDs will be modified for each copy for the style template. */
+?>
+<div class="typehdr"></div>
 <table>
+<tr><td>
+<label>
+<input type="checkbox" name="hidden" id="hidden">
+Hidden
+</label>
+</td></tr>
 <tr><td>
 Width: </td> <td><input id="stylewidth" class="numberbox" type="number" min="1" name="stylewidth" required>
 </td></tr>
@@ -222,7 +233,7 @@ Vert offset: </td> <td><input id="voffset" class="numberbox" type="number" min="
 </td></tr>
 <tr>
 </table>
-
+<ul class="nobullet">
 <li><label>
 <input type="checkbox" name="hcenter" id="hcenter">
 Center horizontally
@@ -231,6 +242,9 @@ Center horizontally
 
 </ul>
 
+<?php
+/* Content specific to the field type gets inserted in the .varinfo div. */
+?>
 <div class="varinfo"></div>
 
 <?php

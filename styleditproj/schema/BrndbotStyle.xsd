@@ -33,6 +33,7 @@
 	<!-- The five style types -->
 	<xs:complexType name="textElement">
 		<xs:sequence>
+			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="modelField" minOccurs="0"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
@@ -52,6 +53,7 @@
 	
 	<xs:complexType name="svgElement">
 		<xs:sequence>
+			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="offset" type="dimensionType"/>
@@ -64,6 +66,7 @@
 
 	<xs:complexType name="imageElement">
 		<xs:sequence>
+			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="offset" type="dimensionType"/>
@@ -76,6 +79,7 @@
 	
 	<xs:complexType name="logoElement">
 		<xs:sequence>
+			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="offset" type="dimensionType"/>
@@ -85,6 +89,7 @@
 	
 	<xs:complexType name="blockElement">
 		<xs:sequence>
+			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
 			<xs:element name="offset" type="dimensionType"/>
@@ -93,6 +98,16 @@
 			<xs:element name="dropshadow" type="dropshadowType" minOccurs="0"/>
 			<xs:element name="opacity" type="xs:decimal"/>
 			<xs:element name="multiply" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="buttonElement">
+		<xs:sequence>
+			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
+			<xs:element name="dimensions" type="dimensionType"/>
+			<xs:element name="anchor" type="anchorType"/>
+			<xs:element name="offset" type="dimensionType"/>
+			<xs:element name="text"/>
 		</xs:sequence>
 	</xs:complexType>
 	

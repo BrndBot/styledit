@@ -67,9 +67,12 @@ var $fileName;
 	}
 
 	/* Create directory path for a model. Returns the path without a slash at the end. */
-	public function makeModelPath ($org) {
+	public function makeModelPath ($org, $category) {
 		// May need to create parent directory
-		$path = XMLFile::CREATED_MODELS_DIR . $this->whiteOut($org);
+		$path = XMLFile::CREATED_MODELS_DIR . 
+			$this->whiteOut($org) .
+			"/" .
+			$this->whiteOut($category);
 		error_log ("makeModelPath for " . $path);
 		if (!file_exists ($path)) 
 			mkdir($path);

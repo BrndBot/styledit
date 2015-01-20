@@ -10,14 +10,17 @@ require_once('bin/xmlfile.php');
 /* Global to save the organization so we can set the
    appropriate file path. */
 $g_org = "";
+$g_category = "";
 
 session_start ();
 
 error_reporting(E_WARNING);
 
 function buildFromForm () {
+	global $g_category;
 	error_log ("buildFromForm");
 	$modelatt .= " name=" . '"' . $_POST["modelname"] . '"';
+	$g_category = $_POST["category"];
 	$content = buildHeadContent();
 	error_log ("Head = " . $content);
 	// Loop through all style segments by counting up the suffix
@@ -43,27 +46,28 @@ function buildFromForm () {
 /* Build the one-time content that precedes the fields. */
 function buildHeadContent() {
 	global $g_org;
+	global $g_category;
 	$g_org = $_POST["orgname"];
 
 	$content .= XMLFile::wrapContent ($g_org, "org");
 	$content .= XMLFile::wrapContent ($_POST["description"], "description");
-	$content .= XMLFile::wrapContent ($_POST["category"], "category");
+	$content .= XMLFile::wrapContent ($g_category, "category");
 	return $content;
 }
 
 
 /* Write the XML. This will throw an exception if the file already 
    exists or anything else goes wrong. On success it returns the file name. */
-function saveXML ($xml) {
+function saveXML ($xml, $category) {
 	global $g_org;
 	try {
 		error_log ("saveXML");
-		if (!$g_org)
-			$g_org = "Crossfit";		// ***** TEMP *******
+//		if (!$g_org)
+//			$g_org = "Crossfit";		// ***** TEMP *******
 		$filename = $_POST["modelname"] . ".xml";
 		error_log ("filename = " . $filename);
 		$xmlf = new XMLFile($filename);
-		$xmlf->writeFile($xmlf->makeModelPath($g_org), $xml);
+		$xmlf->writeFile($xmlf->makeModelPath($g_org, $category), $xml);
 		$_SESSION['org'] = $g_org;
 		return $filename;
 	}
@@ -88,7 +92,7 @@ function saveXML ($xml) {
 <?php
 	$xml = buildFromForm ();
 	error_log ("xml = " . $xml);
-	$filename = saveXML($xml);
+	$filename = saveXML($xml, $g_category);
 	if ($filename) {
 		echo ("<p>Form has been submitted successfully, saved as " . $filename . ".</p>");
 	}
