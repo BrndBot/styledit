@@ -34,10 +34,10 @@ function buildFromForm () {
 	error_log ("Number of fields: " . count($fieldNames));
 	for ($i = 0; $i < count($fieldNames); $i++) {
 		error_log ("Processing field " . $i);
-		$nameElem = XMLFile::wrapContent ($fieldNames[$i], "name");
-		error_log("Name: " . $nameElem);
+//		$nameElem = XMLFile::wrapContent ($fieldNames[$i], "name");
+		$fieldAtt = " name=" . '"' . $fieldNames[$i] . '"';
 		$styleElem = XMLFile::wrapContent ($styleTypes[$i], "type");
-		$content .= XMLFile::wrapContent ($nameElem . "\n" . $styleElem, "field");
+		$content .= XMLFile::wrapContentWithAtts ($nameElem . "\n" . $styleElem, "field", $fieldAtt);
 		error_log ("Content with field = "  . $content);
 	}
 	return XMLFile::wrapContentWithAtts ($content, "model", $modelatt);
