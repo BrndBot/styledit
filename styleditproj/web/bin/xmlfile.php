@@ -1,5 +1,5 @@
 <?php
-/* orgfile.php
+/* xmlfile.php
  *
  *  CONFIDENTIAL
  *  
@@ -52,7 +52,7 @@ var $fileName;
 	}
 	
 	/* Create directory path for a style. Returns the path without a slash at the end. */
-	public function makeStylePath ($org, $brand, $promo) {
+	public function makeStylePath ($org, $brand) {
 		// May need to create parent directories
 		$path = XMLFile::CREATED_STYLES_DIR . $this->whiteOut($org);
 		if (!file_exists ($path)) 
@@ -60,9 +60,9 @@ var $fileName;
 		$path .= "/" . $this->whiteOut($brand);
 		if (!file_exists ($path)) 
 			mkdir($path);
-		$path .= "/" . $this->whiteOut($promo);
-		if (!file_exists ($path)) 
-			mkdir($path);
+//		$path .= "/" . $this->whiteOut($promo);
+//		if (!file_exists ($path)) 
+//			mkdir($path);
 		return $path;
 	}
 

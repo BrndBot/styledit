@@ -6,7 +6,7 @@
  *  All rights reserved by Brndbot, Ltd. 2014
 */
 
-require_once ('bin/orgfile.php');
+require_once ('bin/orgdir.php');
 
 header("Content-type: text/html; charset=utf-8");
 

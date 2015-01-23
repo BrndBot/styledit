@@ -6,6 +6,7 @@
  *  All rights reserved by Brndbot, Ltd. 2014
  */
 
+******OBSOLETE**********
 /* This file contains the functions to read an organization
    description file and turn it into an organization structure.
    An organization description file looks something like this:
