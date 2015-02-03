@@ -22,6 +22,7 @@
 							<xs:element name="logo" type="logoElement"/>
 							<xs:element name="block" type="blockElement"/>
 						</xs:choice>
+						<xs:attribute name="field" style="xs:string"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>
@@ -33,7 +34,6 @@
 	<!-- The five style types -->
 	<xs:complexType name="textElement">
 		<xs:sequence>
-			<xs:element name="field"/>
 			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="modelField" minOccurs="0"/>
 			<xs:element name="dimensions" type="dimensionType"/>
@@ -67,7 +67,6 @@
 
 	<xs:complexType name="imageElement">
 		<xs:sequence>
-			<xs:element name="field"/>
 			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
 			<xs:element name="dimensions" type="dimensionType"/>
 			<xs:element name="anchor" type="anchorType"/>
