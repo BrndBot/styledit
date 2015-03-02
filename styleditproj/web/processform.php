@@ -52,10 +52,14 @@ function buildHeadContent() {
 	$ht = $_POST["promoheight"];
 	$g_org = $_POST["orgname"];
 	$g_brand = $_POST["brand"];
-//	$g_promo = $_POST["promo"];
+	
+	$model = $_POST["model"];
+	error_log("Model: " . $model);
+	$content = XMLFile::wrapContent ($model, "model");
+	
 	$widElem = XMLFile::wrapContent ($wid, "x");
 	$htElem = XMLFile::wrapContent ($ht, "y");
-	$content = XMLFile::wrapContent ($widElem . $htElem, "dimensions");
+	$content .= XMLFile::wrapContent ($widElem . $htElem, "dimensions");
 
 	// Then the organization, brand identity, and promotion.
 	$content .= XMLFile::wrapContent ($g_org, "org");

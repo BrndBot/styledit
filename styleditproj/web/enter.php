@@ -151,6 +151,11 @@ Overall width: </td> <td><input id="promowidth" class="numberbox" type="number" 
 Overall height: </td> <td><input id="promoheight" class="numberbox" type="number" min="1" name="promoheight" required>
 </td></tr>
 </table>
+<?php
+if ($modelparm) {
+	echo ("<input type='hidden' name='model' value='${modelparm}'>\n");
+}
+?>
 
 <ul class="nobullet">
 <li >
