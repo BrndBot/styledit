@@ -22,6 +22,7 @@
 							<xs:element name="logo" type="logoElement"/>
 							<xs:element name="block" type="blockElement"/>
 						</xs:choice>
+						<xs:attribute name="field" type="xs:string"/>
 					</xs:complexType>
 				</xs:element>
 			</xs:sequence>

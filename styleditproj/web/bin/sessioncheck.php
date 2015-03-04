@@ -9,7 +9,7 @@
  *  Include this on every page that requires a logged-in user. 
  */
 
-require_once ('bin/orgfile.php');
+require_once ('bin/orgdir.php');
 require_once ('bin/fontfile.php');
 
 /* Automatically kick the user to the login page if no session with a user */
@@ -34,9 +34,9 @@ function sessioncheck () {
 		if (array_key_exists ('brand', $_SESSION)) {
 			Organization::$selectedBrand = $_SESSION['brand'];
 		}
-		if (array_key_exists ('promo', $_SESSION)) {
-			Organization::$selectedPromo = $_SESSION['promo'];
-		}
+//		if (array_key_exists ('promo', $_SESSION)) {
+//			Organization::$selectedCategory = $_SESSION['promo'];
+//		}
 		return true;
 	}
 }

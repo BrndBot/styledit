@@ -1,0 +1,36 @@
+A brief road map of the web-level PHP files
+
+enter.php: Important IDs and classes
+
+form action="enter.php"
+	Form for reloading the page with a specific model selected.
+	select #morgname	Select element for the organization
+	select #mcategory	Select element for category
+						("promotion" and "cateogry" are used interchangeably)
+	select #mmodel		Select element for model
+
+form #mainform
+	Form for filling out a stylesheet
+	select #orgname		Select element for the organization
+	select #brand		Select element for brand identity
+	select #model		Select element for model 
+
+	div #formbank		A hidden div used as a template for pulling out form elements
+	div .styletemplate	Template for form section for one style
+	div .varinfo		Holder within styletemplate for style type-dependent fields
+	div .imageinfo		Template for image-related form fields
+	div .svginfo		Template for SVG-related form fields
+	div .textinfo		Template for text-related form fields
+	div .blockinfo		Template for block-related form fields
+	div .logoinfo		Template for logo-related form fields
+	(End #formbank)
+
+	div #brandbank		Template holder for divs with select options for each brand identity
+	div #promobank		Template holder for divs with select options for each category
+	div #modellayout	Invisible div holding model layout
+	div #orgcategories	Invisible div holding categories for each organization
+	div #orgmodels		Invisible div holding models for each category
+	
+	div #selectedorg	Invisible div with selected organization, if any
+	div #selectedbrand	Invisible div with selected brand, if any
+	div #selectedpromo	Invisible div with selected category, if any

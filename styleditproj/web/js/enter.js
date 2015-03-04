@@ -43,6 +43,7 @@ $(function () {
 	setSelectedOrg();
 	updateOrgBasedSels();
 	populateByModel();
+	catSelectUpdate();
 	modelSelectUpdate();
 });
 
@@ -61,8 +62,10 @@ function cloneTemplate(sel) {
 function styleTypeUpdate(buttn) {
 	var newsrc = null;
 	var hdrtxt = null;
+	var hideFieldName = true;
 	if (buttn.hasClass('textstyle')) {
 		newsrc = textInfoDiv;
+		hideFieldName = false;
 		hdrtxt = "Text";
 	}
 	else if (buttn.hasClass('svgstyle')) {
@@ -71,6 +74,7 @@ function styleTypeUpdate(buttn) {
 	}
 	else if (buttn.hasClass('imagestyle')) {
 		newsrc = imageInfoDiv;
+		hideFieldName = false;
 		hdrtxt = "Image";
 	}
 	else if (buttn.hasClass('logostyle')) {
@@ -87,6 +91,13 @@ function styleTypeUpdate(buttn) {
 	var varinfo = segment.find('.varinfo');
 	varinfo.empty();
 	varinfo.append(newsrc.clone());
+	fieldNameBox = segment.find('.fieldnamebox');
+	if (hideFieldName) {
+		// Field names apply only to text and image
+		fieldNameBox.hide();
+	} else {
+		fieldNameBox.show();
+	}
 	makeNamesUnique();
 }
 
@@ -212,7 +223,7 @@ function selectIfExists(sel, option) {
 	});
 }
 
-/* Update the "brand personalities" and "promotions" SELECT
+/* Update the "brand personalities" and "models" SELECT
    elements to match the SELECTed organization. If there are
    saved values, apply those if possible (which it may not
    be if the organization has changed). */
@@ -224,12 +235,21 @@ function updateOrgBasedSels() {
 	$('#brand').empty();
 	$('#brand').append(branddiv.find("option").clone());
 	
-	// Now same for promotions
-	var promoid = '#promo-' + org.replace(/\s/g,'');
-	var promodiv = $(promoid);
-	// TODO also should strip all white space in PHP
-	$('#promo').empty();
-	$('#promo').append(promodiv.find("option").clone());
+	// Now same for models. Need to get them under all categories,
+	// so we look at all children of #orgmodels whose ID starts with
+	// 'model-Orgname'.
+	var modeldivs = $('#orgmodels > div');
+	var ourdivs = $([]);
+	var modelPrefix = 'model-' + org;
+	$('#model').empty();
+	modeldivs.each (function () {
+		// Retain only matching IDs
+		var modeldiv = $(this);
+		var modeldivid = modeldiv.attr("id");
+		if (modeldivid.indexOf(modelPrefix) == 0) {
+			$('#model').append (modeldiv.find("option").clone());
+		}
+	});
 	
 	// Now set to the saved values, if available
 	savedbrand = $('#selectedbrand');
@@ -277,13 +297,17 @@ function populateByModel() {
 	}
 	$("#mainform .styletemplate").each(function (n) {
 		if (n < fieldStyles.length) {
-			console.log("Style " + fieldStyles[n]);
+			console.log ("Field name " + fieldNames[n]);
+			console.log ("Field style " + fieldStyles[n]);
 			var checkedButton = $(this).find('.' + fieldStyles[n] + 'style');
-			//console.log("checked button found: " + checkedButton.length);
 			checkedButton.attr('checked', true);
 			var titleText = $(this).find('.fieldname1');
 			titleText.text(fieldNames[n]);
 			titleText.show();
+			
+			// Fill in the field name
+			var fieldTextBox = $(this).find('.fieldnamebox input');
+			fieldTextBox.val(fieldNames[n]);
 			$(this).find(".stylesel").hide();	// Style types are fixed, so hide the buttons
 			styleTypeUpdate(checkedButton);
 		}
@@ -294,13 +318,24 @@ function populateByModel() {
  * Functions for the model selection form **************************
  */
 
-/* In the model selection form, populate the models pulldown menu
+/* In the model selection form, populate the categories pulldown menu
    based on the selected organization. */
-function modelSelectUpdate () {
+function catSelectUpdate () {
 	// Get the set of options which is appropriate for the organization
 	// from a hidden div.
-	var orgid = 'model-' + $('#morgname').val();
-	var modeldiv = $('#orgmodels').find("#" + orgid);
+	var orgid = 'cat-' + $('#morgname').val();
+	console.log ("catSelectUpdate orgid = " + orgid);
+	//var catid = 'cat-' + $('#mcategory').val();
+	var catdiv = $('#orgcategories').find('#' + orgid);
+	$('#mcategory').empty();
+	$('#mcategory').append(catdiv.find("option").clone());
+}
+
+/* In the model selection form, populate the models pulldown menu
+ * based on the selected organization and category. */
+function modelSelectUpdate() {
+	var orgcatid = 'model-' + $('#morgname').val() + '-' + $('#mcategory').val();
+	var modeldiv = $('#orgmodels').find("#" + orgcatid);
 	$('#mmodel').empty();
 	$('#mmodel').append(modeldiv.find("option").clone());
 }

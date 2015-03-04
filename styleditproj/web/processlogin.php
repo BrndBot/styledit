@@ -10,7 +10,7 @@
    It has no HTML and always redirects.  */
 
 require_once ('bin/supportfuncs.php');
-require_once ('bin/orgfile.php');
+require_once ('bin/orgdir.php');
 require_once ('bin/fontfile.php');
 
 	
@@ -21,7 +21,7 @@ try {
 	if ("print600" == $pw){
 		session_start();
 		$_SESSION['user'] = $userName;
-		readOrganizationFile ('config/orgs.dat');
+		Organization::readModelDir ("/var/brndbot/");
 		$_SESSION['orgs'] = Organization::$organizations;
 		
 		readFontFile ("config/fonts.dat");

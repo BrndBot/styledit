@@ -43,7 +43,12 @@ var $organization;
 		// The field elements are one level down
 		foreach ($simpleXML->children() as $elem) {
 			if ($elem->getName() == "field") {
-				$this->fieldNames[] = trim(dom_import_simplexml($elem->name)->firstChild->data);
+				foreach ($elem->attributes() as $attr => $val) {
+					error_log ("Field attribute: " . $attr . "   value = " . $val);
+					if ($attr == 'name')
+						$this->fieldNames[] = $val;
+				}
+//				$this->fieldNames[] = trim(dom_import_simplexml($elem->name)->firstChild->data);
 				$this->styleTypes[] = trim(dom_import_simplexml($elem->type)->firstChild->data);
 			} else if ($elem->getName() == "org") {
 				$this->organization = trim(dom_import_simplexml($elem)->firstChild->data);
@@ -64,9 +69,9 @@ var $organization;
 		//return array ($fieldNames, $styleTypes);
 	}
 	
-	/* Get the names of the model files for the named organization. */
- 	public static function listModelFiles($org) {
- 		$path = XMLFile::CREATED_MODELS_DIR . $org . "/";
+	/* Get the names of the model files for the named category. */
+ 	public static function listModelFiles($category, $org) {
+ 		$path = XMLFile::CREATED_MODELS_DIR . $org . "/" . $category . "/";
  		$dirArray = scandir($path);
  		$val = array();
  		// Remove invisibles
@@ -79,13 +84,13 @@ var $organization;
  	}
  	
  	/* If the model file specified by the arguments exists,
- 	   returns a ModelFile. Otherwise returns false. */
- 	public static function findModel ($model, $org) {
+ 	   returns a ModelFile. Otherwise returns null. */
+ 	public static function findModel ($model, $category, $org) {
  		error_log("findModel, model = " . $model . "   org = " . $org);
- 		$path = XMLFile::CREATED_MODELS_DIR . $org . "/" . $model;
+ 		$path = XMLFile::CREATED_MODELS_DIR . $org . "/" . $category . "/" . $model . ".xml";
  		error_log("path = " . $path);
  		if (file_exists($path))
  			return new ModelFile($path);
- 		return false;
+ 		return null;
  	}
  }

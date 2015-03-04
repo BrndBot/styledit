@@ -6,7 +6,7 @@
 */
 
 require_once('bin/xmlfile.php');
-require_once('bin/orgfile.php');
+require_once('bin/orgdir.php');
 
 session_start ();
 
@@ -16,7 +16,7 @@ session_start ();
    appropriate file path. */
 $g_org = "";
 $g_brand = "";
-$g_promo = "";
+//$g_promo = "";
 
 
 
@@ -46,21 +46,24 @@ function buildFromForm () {
 
 /* Build the one-time content that precedes the styles. */
 function buildHeadContent() {
-	global $g_org, $g_brand, $g_promo;
+	global $g_org, $g_brand;
 	// First the width and height of the whole piece
 	$wid = $_POST["promowidth"];
 	$ht = $_POST["promoheight"];
 	$g_org = $_POST["orgname"];
 	$g_brand = $_POST["brand"];
-	$g_promo = $_POST["promo"];
+	
+	$model = $_POST["model"];
+	$content = XMLFile::wrapContent ($model, "model");
+	
 	$widElem = XMLFile::wrapContent ($wid, "x");
 	$htElem = XMLFile::wrapContent ($ht, "y");
-	$content = XMLFile::wrapContent ($widElem . $htElem, "dimensions");
+	$content .= XMLFile::wrapContent ($widElem . $htElem, "dimensions");
 
 	// Then the organization, brand identity, and promotion.
 	$content .= XMLFile::wrapContent ($g_org, "org");
 	$content .= XMLFile::wrapContent ($g_brand, "brand");
-	$content .= XMLFile::wrapContent ($g_promo, "promo");
+//	$content .= XMLFile::wrapContent ($g_promo, "promo");
 	return $content;
 }
 
@@ -93,7 +96,15 @@ function buildSegment ($n) {
 			$content = buildLogoContent($n);
 			break;
 	}
-	return XMLFile::wrapContent ($content, "style");
+	if (array_key_exists (appendSuffix("fieldname", $n), $_POST)) {
+		$fieldName = $_POST[appendSuffix("fieldname", $n)];
+	}
+	if ($fieldName)
+		$retval = XMLFile::wrapContentWithAtts ($content, "style", 'field="' . $fieldName . '"');
+	else {
+		$retval = XMLFile::wrapContent ($content, "style");
+	}
+	return $retval;
 }
 
 /* Append the suffix to a name */
@@ -103,8 +114,7 @@ function appendSuffix ($name, $n) {
 
 /* We have a text selection. Build its XML. */
 function buildTextContent ($n) {
-	error_log("buildTextContent");
-	$content = buildCommonContent ($n);
+	$content = buildCommonContent ($n, true);
 	$defaultText = $_POST[appendSuffix("textcontent",$n)];
 	if ($defaultText) {
 		$content .= XMLFile::wrapContent ($defaultText, "default");
@@ -113,17 +123,16 @@ function buildTextContent ($n) {
 	$content .= XMLFile::wrapContent($fontOption, "font");
 	$alignOption = $_POST[appendSuffix("alignment", $n)];
 	$content .= XMLFile::wrapContent($alignOption, "alignment");
-	error_log("buildTextContent 2");
 	$pointSize = $_POST[appendSuffix("pointsize", $n)];
 	$content .= XMLFile::wrapContent($pointSize, "size");
 
-	if ($_POST["bold"]) {
+	if (array_key_exists(appendSuffix("bold", $n), $_POST)) {
 		$content .= XMLFile::emptyTag("bold");
 	}
-	if ($_POST[appendSuffix("italic", $n)]) {
+	if (array_key_exists (appendSuffix("italic", $n), $_POST)) {
 		$content .= XMLFile::emptyTag("italic");
 	}
-	if ($_POST[appendSuffix("dropshadow", $n)]) {
+	if (array_key_exists (appendSuffix("dropshadow", $n), $_POST)) {
 		$h = $_POST[appendSuffix("dropshadh", $n)];
 		$v = $_POST[appendSuffix("dropshadv", $n)];
 		$blur = $_POST[appendSuffix("dropshadblur", $n)];
@@ -143,8 +152,12 @@ function buildTextContent ($n) {
 		
 }
 
-function buildCommonContent ($n) {
-	$content = dimensionContent ($n);
+function buildCommonContent ($n, $useFieldName) {
+	$content = '';
+// 	if ($useFieldName) {
+// 		$content .= fieldNameContent ($n);
+// 	}
+	$content .= dimensionContent ($n);
 	$content .= anchorContent ($n);
 	$content .= offsetContent ($n);
 	$content .= hCenterContent ($n);
@@ -154,7 +167,7 @@ function buildCommonContent ($n) {
 
 /* We have an SVG selection. Build its XML. */
 function buildSVGContent ($n) {
-	$content = buildCommonContent ($n);
+	$content = buildCommonContent ($n, false);
 	$svg = $_POST[appendSuffix("svg", $n)];
 	$content .= $svg . "\n";
 	$svgparamnames = $_POST[appendSuffix("svgparamnames", $n)];
@@ -172,10 +185,11 @@ function buildSVGContent ($n) {
 
 /* We have an image selection. Build its XML. */
 function buildImageContent ($n) {
-	$content = buildCommonContent ($n);
+	$content = buildCommonContent ($n, true);
 	$content .= XMLFile::wrapContent ($_POST[appendSuffix("imagepath",$n)], "path");
 	$content .= XMLFile::wrapContent ($_POST[appendSuffix("opacity",$n)], "opacity");
-	if ($_POST[appendSuffix("multiply", $n)]) {
+	if (array_key_exists(appendSuffix("multiply", $n), $_POST)) {
+//	if ($_POST[appendSuffix("multiply", $n)]) {
 		$content .= XMLFile::emptyTag("multiply");
 	}
 	
@@ -184,14 +198,14 @@ function buildImageContent ($n) {
 
 /* We have a block selection. Build its XML. */
 function buildBlockContent ($n) {
-	$content = buildCommonContent ($n);
+	$content = buildCommonContent ($n, false);
 	$paletteOption = $_POST[appendSuffix("palette", $n)];
 	$content .= XMLFile::wrapContent($paletteOption, "palette");
 	if ($paletteOption == 'palettecustom') {
 		$customColor = $_POST[appendSuffix("blockcolor", $n)];
 		$content .= XMLFile::wrapContent ($customColor, "blockcolor");
 	}
-	if ($_POST[appendSuffix("dropshadow", $n)]) {
+	if (array_key_exists (appendSuffix("dropshadow", $n), $_POST)) {
 		$h = $_POST[appendSuffix("blockdropshadh", $n)];
 		$v = $_POST[appendSuffix("blockdropshadv", $n)];
 		$blur = $_POST[appendSuffix("blockdropshadblur", $n)];
@@ -201,7 +215,8 @@ function buildBlockContent ($n) {
 		$content .= XMLFile::wrapContent ($dropContent, "dropshadow");
 	}
 	$content .= XMLFile::wrapContent ($_POST[appendSuffix("opacity",$n)], "opacity");
-	if ($_POST[appendSuffix("multiply", $n)]) {
+	if (array_key_exists (appendSuffix("multiply", $n), $_POST)) {
+//	if ($_POST[appendSuffix("multiply", $n)]) {
 		$content .= XMLFile::emptyTag("multiply");
 	}
 	return XMLFile::wrapContent ($content, "block");	
@@ -209,7 +224,7 @@ function buildBlockContent ($n) {
 
 /* We have a logo selection. Build its XML. */
 function buildLogoContent ($n) {
-	$content = buildCommonContent ($n);
+	$content = buildCommonContent ($n, false);
 	if ($_POST[appendSuffix("dropshadow", $n)]) {
 		$h = $_POST[appendSuffix("logodropshadh", $n)];
 		$v = $_POST[appendSuffix("logodropshadv", $n)];
@@ -230,6 +245,13 @@ function dimensionContent ($n) {
 	$htElem = XMLFile::wrapContent ($ht, "y");
 	return XMLFile::wrapContent ($widElem . $htElem, "dimensions");
 }
+
+/* The field name is used in only some field types. */
+function fieldNameContent ($n) {
+	$fieldName = $_POST[appendSuffix("fieldname", $n)];
+	return XMLFile::wrapContent ($fieldName, "field");
+}
+
 
 /* The anchor specification is common to all style types. */
 function anchorContent ($n) {
@@ -282,18 +304,18 @@ function hCenterContent ($n) {
 }
 
 
-/* Write the XML. This will throw an exception if the file already 
+/* Write the XML to a file. This will throw an exception if the file already 
    exists or anything else goes wrong. On success it returns the file name. */
 function saveXML ($xml) {
-	global $g_org, $g_brand, $g_promo;
+	global $g_org, $g_brand;
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
-		$xmlf->writeFile($xmlf->makeStylePath($g_org, $g_brand, $g_promo), $xml);
+		$xmlf->writeFile($xmlf->makeStylePath($g_org, $g_brand), $xml);
 		Organization::$selectedOrg = $g_org;
 		$_SESSION['org'] = $g_org;
 		$_SESSION['brand'] = $g_brand;
-		$_SESSION['promo'] = $g_promo;
+//		$_SESSION['promo'] = $g_promo;
 		return $filename;
 	}
 	catch (Exception $e) {

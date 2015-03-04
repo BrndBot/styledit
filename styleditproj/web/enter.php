@@ -7,7 +7,7 @@
 */
 
 require_once ('bin/fontfile.php');
-require_once ('bin/orgfile.php');
+require_once ('bin/orgdir.php');
 require_once ('bin/modelfile.php');
 
 header("Content-type: text/html; charset=utf-8");
@@ -36,6 +36,9 @@ error_log("enter.php");
 $modelparm = null;
 if (array_key_exists("model", $_GET))
 	$modelparm = $_GET["model"];
+$categoryparm = null;
+if (array_key_exists("category", $_GET))
+	$categoryparm = $_GET["category"];
 $orgparm = null;
 if (array_key_exists("org", $_GET))
 	$orgparm = $_GET["org"];
@@ -44,11 +47,12 @@ $modelFile = null;
 
 
 /* See if the URL specifies a model file */
-if ($modelparm && $orgparm) {
-	$modelFile = ModelFile::findModel($modelparm, $orgparm);
+if ($modelparm && $categoryparm && $orgparm) {
+	$modelFile = ModelFile::findModel($modelparm, $categoryparm, $orgparm);
 	// create a series of spans, each containing the name of a style type.
 	// Store the field names and style types.
-	$modelFile->loadModelInfo($orgparm);
+	if ($modelFile)
+		$modelFile->loadModelInfo($orgparm);
 }
 
 ?>
@@ -64,7 +68,7 @@ if ($modelparm && $orgparm) {
 <table>
 <tr><td>Organization:</td>
 <td>
-	<select name="org" id="morgname" onchange="modelSelectUpdate();" >
+	<select name="org" id="morgname" onchange="catSelectUpdate();" >
 <?php
 /* Populate the organizations pulldown in the model selection form */
 function fillOrgOptions ($canLimit) {
@@ -74,8 +78,10 @@ function fillOrgOptions ($canLimit) {
 		echo ("<option>" . $modelFile->organization . "</option>\n");
 	} else {
 		// Fill in the organizations pulldown menu 
+		error_log ("Adding organization options");
 		reset (Organization::$organizations);
-		while (list($key, $org) = each(Organization::$organizations)) {
+		foreach (Organization::$organizations as $org) {
+			error_log ("Adding organization option");
 			echo ("<option>" . $org->name . "</option>\n");
 		}
 	}
@@ -83,6 +89,12 @@ function fillOrgOptions ($canLimit) {
 
 fillOrgOptions(false);
 ?>
+	</select>
+</td></tr>
+<tr><td>
+	Category:
+</td><td>
+	<select name="category" id="mcategory" onchange="modelSelectUpdate();">
 	</select>
 </td></tr>
 <tr><td>
@@ -124,9 +136,9 @@ if (isset ($modelFile)) {
 	<select name="brand" id="brand">
 	</select>
 </td></tr>
-<tr><td>Promotion:</td>
+<tr><td>Model:</td>
 <td>
-	<select name="promo" id="promo">
+	<select name="model" id="model">
 	</select>
 </td></tr>
 <tr><td>
@@ -139,6 +151,11 @@ Overall width: </td> <td><input id="promowidth" class="numberbox" type="number" 
 Overall height: </td> <td><input id="promoheight" class="numberbox" type="number" min="1" name="promoheight" required>
 </td></tr>
 </table>
+<?php
+if ($modelparm) {
+	echo ("<input type='hidden' name='model' value='${modelparm}'>\n");
+}
+?>
 
 <ul class="nobullet">
 <li >
@@ -203,11 +220,10 @@ Overall height: </td> <td><input id="promoheight" class="numberbox" type="number
 ?>
 <div class="typehdr"></div>
 <table>
-<tr><td>
-<label>
-<input type="checkbox" name="hidden" id="hidden">
-Hidden
-</label>
+<tr class="fieldnamebox"><td>
+	Field name:
+</td><td>
+	<input type="text" name="fieldname">
 </td></tr>
 <tr><td>
 Width: </td> <td><input id="stylewidth" class="numberbox" type="number" min="1" name="stylewidth" required>
@@ -247,16 +263,9 @@ Center horizontally
 ?>
 <div class="varinfo"></div>
 
-<?php
-// If a model has been selected, user can't add or remove fields
-if (!isset ($modelFile)) {
-?>
 	<button type="button" onclick="addStyle($(this));">Add</button>
 	<button type="button" onclick="removeStyle($(this));">Remove</button>
-<?php
-}
-?>
-<hr>
+	<hr>
 </div>	<!-- styletemplate -->
 
 
@@ -426,11 +435,11 @@ Parameter(s):
 
 <div id="promobank" class="hidden">
 <?php
-	/* Build a set of divs which contain the promotion menu options
+	/* Build a set of divs which contain the promotion (category) menu options
 	   for each organization */
 	reset (Organization::$organizations);
-	while (list($key, $org) = each(Organization::$organizations)) {
-		$org->insertPromotions();
+	foreach (Organization::$organizations as $org) {
+		$org->insertCategories();
 	}
 ?>
 </div>	<!-- End promobank -->
@@ -454,19 +463,33 @@ if (isset ($modelFile)) {
 ?>
 </div>
 
-<!--  Invisible div holding models for each style -->
+<!--  Invisible div holding categories for each organization -->
+<div id="orgcategories" class="hidden">
+<?php
+	/* Build a set of divs which contain the model file names
+	   for each organization and category */
+	reset (Organization::$organizations);
+	foreach (Organization::$organizations as $org) {
+		$org->insertCategories();
+	}
+?>
+</div>
+
+<!--  Invisible div holding models for each category -->
 <div id="orgmodels" class="hidden">
 <?php
 	/* Build a set of divs which contain the model file names
-	   for each organization */
+	   for each category */
 	reset (Organization::$organizations);
-	while (list($key, $org) = each(Organization::$organizations)) {
-		$org->insertModels();
+	foreach (Organization::$organizations as $org) {
+		foreach ($org->categories as $cat) {
+			$org->insertModels($cat->name);
+		}
 	}
 ?>
 </div>
 <?php
-	/* If the session variables 'org', 'brand' and 'promo' are set, 
+	/* If the session variables 'org', 'brand' and 'category' are set, 
 	   put them into divs with corresponding IDs */
 	if (isset(Organization::$selectedOrg)) {
 		echo("<div class=\"hidden\" id=\"selectedorg\">" .
@@ -478,9 +501,9 @@ if (isset ($modelFile)) {
 			Organization::$selectedBrand .
 			"</div>\n");
 	} 
-	if (isset(Organization::$selectedPromo)) {
+	if (isset(Organization::$selectedCategory)) {
 		echo("<div class=\"hidden\" id=\"selectedpromo\">" .
-			Organization::$selectedPromo .
+			Organization::$selectedCategory .
 			"</div>\n");
 	} 
 ?>
