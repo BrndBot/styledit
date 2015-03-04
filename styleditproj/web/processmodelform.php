@@ -6,6 +6,7 @@
 */
 
 require_once('bin/xmlfile.php');
+require_once ('bin/orgdir.php');
 
 /* Global to save the organization so we can set the
    appropriate file path. */
@@ -96,6 +97,9 @@ function saveXML ($xml, $category) {
 	if ($filename) {
 		echo ("<p>Form has been submitted successfully, saved as " . $filename . ".</p>");
 	}
+	// Reload models to reflect changes
+	Organization::readModelDir ("/var/brndbot/");
+	$_SESSION['orgs'] = Organization::$organizations;	
 ?>
 
 <p><a href="entermodel.php">Enter another model</a></p>

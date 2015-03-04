@@ -31,14 +31,14 @@ function buildFromForm () {
 	$styleatt .= " name=" . '"' . $_POST["stylename"] . '"';
 	$content = buildHeadContent();
 	
-	// Loop through all style segments by counting up the suffix
-	// till we don't find a name with that suffix.
-	for ($suffix = 0;; $suffix++) {
+	// Loop through all style segments by counting up the suffix.
+	// Can be gaps due to deleted segments! How do we set a terminating condition?
+	// Setting a high limit is ugly but will do for now.
+	for ($suffix = 0; $suffix <= 99; $suffix++) {
 		$newSegment = buildSegment($suffix);
 		if ($newSegment) {
+			error_log ("newSegment = " . $newSegment);
 			$content .= $newSegment;
-		} else {
-			break;
 		}
 	}
 	return XMLFile::wrapContentWithAtts ($content, "styleSet", $styleatt);
@@ -75,9 +75,10 @@ function whiteOut ($s) {
 
 /* Need to grab stuff from this to put into a loop for each style segment */
 function buildSegment ($n) {
-	$styletype = $_POST[appendSuffix("styletype", $n)];
-	if (!$styletype)
+	if (!array_key_exists (appendSuffix("styletype", $n), $_POST)) {
 		return NULL;
+	}
+	$styletype = $_POST[appendSuffix("styletype", $n)];
 	$content = "";
 	switch ($styletype) {
 		case "text":
@@ -225,7 +226,7 @@ function buildBlockContent ($n) {
 /* We have a logo selection. Build its XML. */
 function buildLogoContent ($n) {
 	$content = buildCommonContent ($n, false);
-	if ($_POST[appendSuffix("dropshadow", $n)]) {
+	if (array_key_exists (appendSuffix("dropshadow", $n), $_POST)) {
 		$h = $_POST[appendSuffix("logodropshadh", $n)];
 		$v = $_POST[appendSuffix("logodropshadv", $n)];
 		$blur = $_POST[appendSuffix("logodropshadblur", $n)];
@@ -297,7 +298,7 @@ function offsetContent ($n) {
 */
 function hCenterContent ($n) {
 	$content = "";
-	if ($_POST[appendSuffix("hcenter", $n)]) {
+	if (array_key_exists (appendSuffix("hcenter", $n), $_POST)) {
 		$content .= XMLFile::emptyTag("hCenter");
 	}
 	return $content;

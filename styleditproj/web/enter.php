@@ -122,6 +122,11 @@ if (isset ($modelFile)) {
 		action="processform.php" 
 		method="post" 
 		accept-charset="UTF-8">
+<?php
+if (isset ($modelFile)) {
+	echo ("<input type='hidden' id='modelName' value='" . $modelFile->modelName . "'>\n");
+}
+?>
 <table id="globalfields">
 <tr><td>Organization:</td>
 <td>

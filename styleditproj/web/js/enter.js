@@ -209,15 +209,21 @@ function suffixName (nam, n) {
 function setSelectedOrg() {
 	savedorg = $('#selectedorg');
 	if (savedorg.length > 0) {
+		console.log ("saved org " + savedorg.text());
 		selectIfExists($('#orgname'), savedorg.text());
 		selectIfExists($('#morgname'), savedorg.text());
 	}
 }
 
+/* Set the chosen option if available.
+ * sel is a JQuery selector for a select element.
+ * option is the string for the option to set. */
 function selectIfExists(sel, option) {
+	console.log ("Selecting " + option);
 	sel.children().each(function() {
 		if ($(this).text() == option) {
-			sel.val(option);
+			sel.val(option).change();
+			console.log ("Matching option found, selection is now " + sel.val());
 			return;
 		}
 	});
@@ -229,6 +235,8 @@ function selectIfExists(sel, option) {
    be if the organization has changed). */
 function updateOrgBasedSels() {
 	var org = $('#orgname').val();
+	if (!org)
+		return;
 	var brandid = '#brand-' + org.replace(/\s/g,'');
 	var branddiv = $(brandid);
 
@@ -329,13 +337,20 @@ function catSelectUpdate () {
 	var catdiv = $('#orgcategories').find('#' + orgid);
 	$('#mcategory').empty();
 	$('#mcategory').append(catdiv.find("option").clone());
+	
+	modelSelectUpdate();
 }
 
 /* In the model selection form, populate the models pulldown menu
  * based on the selected organization and category. */
 function modelSelectUpdate() {
+	console.log ("modelSelectUpdate");
 	var orgcatid = 'model-' + $('#morgname').val() + '-' + $('#mcategory').val();
 	var modeldiv = $('#orgmodels').find("#" + orgcatid);
 	$('#mmodel').empty();
 	$('#mmodel').append(modeldiv.find("option").clone());
+	// See if there is a selected model
+	if ($('#modelName').length > 0) {
+		selectIfExists ($('#model'), $('#modelName').val());
+	}
 }

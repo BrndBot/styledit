@@ -130,7 +130,11 @@
  			foreach ($catArray as $catName) {
  				if (substr($catName, 0, 1) == '.')
  					continue;
-	 			$cat = new Category($catName);
+				if (strpos(strtolower($catName), '.png') > 0 ||
+						strpos(strtolower($catName), '.jpg') > 0 ||
+						strpos(strtolower($catName), '.gif') > 0)	// Don't list images
+					continue;
+ 				$cat = new Category($catName);
 	 			$org->categories[] = $cat;
 	 			$catPath = $org->modelPath . $catName . "/";
 	 			
