@@ -13,6 +13,7 @@
 				<xs:element name="org"/>
 				<xs:element name="brand"/>
 				<xs:element name="promo"/>
+				<xs:element name="channel" minOccurs="1" maxOccurs="unbounded"/>
 				<xs:element name="style"  minOccurs="1" maxOccurs="unbounded">
 					<xs:complexType>
 						<xs:choice>
@@ -102,16 +103,6 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="buttonElement">
-		<xs:sequence>
-			<xs:element name="hidden" minOccurs="0" type="emptyElement"/>
-			<xs:element name="dimensions" type="dimensionType"/>
-			<xs:element name="anchor" type="anchorType"/>
-			<xs:element name="offset" type="dimensionType"/>
-			<xs:element name="text"/>
-		</xs:sequence>
-	</xs:complexType>
-	
 	<xs:complexType name="dropshadowType">
 		<xs:sequence>
 			<xs:element name="h" type="xs:decimal"/>
