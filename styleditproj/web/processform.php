@@ -12,11 +12,12 @@ session_start ();
 
 //error_reporting(E_WARNING);
 
-/* Globals to save the organization, brand, and promo so we can set the
+/* Globals to save the organization, brand, and channel so we can set the
    appropriate file path. */
 $g_org = "";
 $g_brand = "";
-//$g_promo = "";
+$g_channel = "";
+
 
 
 
@@ -46,12 +47,13 @@ function buildFromForm () {
 
 /* Build the one-time content that precedes the styles. */
 function buildHeadContent() {
-	global $g_org, $g_brand;
+	global $g_org, $g_brand, $g_channel;
 	// First the width and height of the whole piece
 	$wid = $_POST["promowidth"];
 	$ht = $_POST["promoheight"];
 	$g_org = $_POST["orgname"];
 	$g_brand = $_POST["brand"];
+	$g_channel = $_POST["channel"];
 	
 	$model = $_POST["model"];
 	$content = XMLFile::wrapContent ($model, "model");
@@ -63,7 +65,7 @@ function buildHeadContent() {
 	// Then the organization, brand identity, and promotion.
 	$content .= XMLFile::wrapContent ($g_org, "org");
 	$content .= XMLFile::wrapContent ($g_brand, "brand");
-//	$content .= XMLFile::wrapContent ($g_promo, "promo");
+	$content .= XMLFile::wrapContent ($g_channel, "channel");
 	return $content;
 }
 
@@ -308,7 +310,7 @@ function hCenterContent ($n) {
 /* Write the XML to a file. This will throw an exception if the file already 
    exists or anything else goes wrong. On success it returns the file name. */
 function saveXML ($xml) {
-	global $g_org, $g_brand;
+	global $g_org, $g_brand, $g_channel;
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
@@ -316,7 +318,7 @@ function saveXML ($xml) {
 		Organization::$selectedOrg = $g_org;
 		$_SESSION['org'] = $g_org;
 		$_SESSION['brand'] = $g_brand;
-//		$_SESSION['promo'] = $g_promo;
+		$_SESSION['channel'] = $g_channel;
 		return $filename;
 	}
 	catch (Exception $e) {

@@ -34,9 +34,9 @@ function sessioncheck () {
 		if (array_key_exists ('brand', $_SESSION)) {
 			Organization::$selectedBrand = $_SESSION['brand'];
 		}
-//		if (array_key_exists ('promo', $_SESSION)) {
-//			Organization::$selectedCategory = $_SESSION['promo'];
-//		}
+		if (array_key_exists ('channel', $_SESSION)) {
+			Organization::$selectedChannel = $_SESSION['channel'];
+		}
 		return true;
 	}
 }

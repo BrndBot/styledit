@@ -146,6 +146,13 @@ if (isset ($modelFile)) {
 	<select name="model" id="model">
 	</select>
 </td></tr>
+<tr><td>Channel:</td>
+<td>
+	<select name="channel" id="channel">
+		<option>Twitter</option>
+		<option>Facebook</option>
+	</select>
+</td></tr>
 <tr><td>
 Style set name:</td> <td><input id="stylename" class="textbox" type="text" name="stylename" required>
 </td></tr>

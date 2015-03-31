@@ -35,6 +35,7 @@
 	public static $selectedOrg;
 	public static $selectedBrand;
 	public static $selectedCategory;
+	public static $selectedChannel;
 	
 	/** Constructor.
 	 *  Arguments:
