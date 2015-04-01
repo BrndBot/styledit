@@ -148,7 +148,7 @@ if (isset ($modelFile)) {
 </td></tr>
 <tr><td>Channel:</td>
 <td>
-	<select name="channel" id="channel">
+	<select multiple name="channel" id="channel">
 		<option>Twitter</option>
 		<option>Facebook</option>
 	</select>
