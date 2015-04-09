@@ -7,6 +7,7 @@
 
 require_once('bin/xmlfile.php');
 require_once ('bin/orgdir.php');
+require_once('bin/loggersetup.php');
 
 /* Global to save the organization so we can set the
    appropriate file path. */
@@ -18,12 +19,12 @@ session_start ();
 error_reporting(E_WARNING);
 
 function buildFromForm () {
+	global $logger;
 	global $g_category;
-	error_log ("buildFromForm");
+	$logger->info ("buildFromForm");
 	$modelatt .= " name=" . '"' . $_POST["modelname"] . '"';
 	$g_category = $_POST["category"];
 	$content = buildHeadContent();
-	error_log ("Head = " . $content);
 	// Loop through all style segments by counting up the suffix
 	// till we don't find a name with that suffix.
 	//
@@ -32,14 +33,11 @@ function buildFromForm () {
 	// up with a fix similar to what's done in the style editor.
 	$fieldNames = $_POST["fieldname"];
 	$styleTypes = $_POST["styletype"];
-	error_log ("Number of fields: " . count($fieldNames));
 	for ($i = 0; $i < count($fieldNames); $i++) {
-		error_log ("Processing field " . $i);
 //		$nameElem = XMLFile::wrapContent ($fieldNames[$i], "name");
 		$fieldAtt = " name=" . '"' . $fieldNames[$i] . '"';
 		$styleElem = XMLFile::wrapContent ($styleTypes[$i], "type");
 		$content .= XMLFile::wrapContentWithAtts ($nameElem . "\n" . $styleElem, "field", $fieldAtt);
-		error_log ("Content with field = "  . $content);
 	}
 	return XMLFile::wrapContentWithAtts ($content, "model", $modelatt);
 }
@@ -60,20 +58,21 @@ function buildHeadContent() {
 /* Write the XML. This will throw an exception if the file already 
    exists or anything else goes wrong. On success it returns the file name. */
 function saveXML ($xml, $category) {
+	global $logger;
 	global $g_org;
 	try {
-		error_log ("saveXML");
+		$logger->info ("saveXML");
 //		if (!$g_org)
 //			$g_org = "Crossfit";		// ***** TEMP *******
 		$filename = $_POST["modelname"] . ".xml";
-		error_log ("filename = " . $filename);
+		$logger->info ("filename = " . $filename);
 		$xmlf = new XMLFile($filename);
 		$xmlf->writeFile($xmlf->makeModelPath($g_org, $category), $xml);
 		$_SESSION['org'] = $g_org;
 		return $filename;
 	}
 	catch (Exception $e) {
-		error_log($e->getMessage());
+		$logger->error($e->getMessage());
 		echo ("<p>Could not save the file. <br>");
 		echo ($e->getMessage() . "</p>");
 		return false;
@@ -92,7 +91,7 @@ function saveXML ($xml, $category) {
 
 <?php
 	$xml = buildFromForm ();
-	error_log ("xml = " . $xml);
+	$logger->info ("xml = " . $xml);
 	$filename = saveXML($xml, $g_category);
 	if ($filename) {
 		echo ("<p>Form has been submitted successfully, saved as " . $filename . ".</p>");

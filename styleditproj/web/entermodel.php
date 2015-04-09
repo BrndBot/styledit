@@ -7,6 +7,7 @@
 */
 
 require_once ('bin/orgdir.php');
+require_once('bin/loggersetup.php');
 
 header("Content-type: text/html; charset=utf-8");
 
@@ -15,7 +16,7 @@ include('bin/sessioncheck.php');
 
 if (!sessioncheck())
 	return;
-error_log("entermodel.php");
+$logger->info("entermodel.php");
 ?>
 
 <html lang="en">

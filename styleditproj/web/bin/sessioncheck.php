@@ -12,6 +12,9 @@
 require_once ('bin/orgdir.php');
 require_once ('bin/fontfile.php');
 
+/* A convenient place to put this and make sure it will be called. */
+date_default_timezone_set('America/New_York');
+
 /* Automatically kick the user to the login page if no session with a user */
 function sessioncheck () {
 	if (!array_key_exists('user', $_SESSION)) {

@@ -9,6 +9,7 @@
 require_once ('bin/fontfile.php');
 require_once ('bin/orgdir.php');
 require_once ('bin/modelfile.php');
+require_once('bin/loggersetup.php');
 
 header("Content-type: text/html; charset=utf-8");
 
@@ -16,7 +17,7 @@ session_start();
 include('bin/sessioncheck.php');
 if (!sessioncheck())
 	return;
-error_log("enter.php");
+$logger->info("enter.php");
 ?>
 
 
@@ -73,15 +74,15 @@ if ($modelparm && $categoryparm && $orgparm) {
 /* Populate the organizations pulldown in the model selection form */
 function fillOrgOptions ($canLimit) {
 	global $modelFile;
+	global $logger;
 	if ($canLimit && isset ($modelFile)) {
 		// Fill in only the organization for the selected model
 		echo ("<option>" . $modelFile->organization . "</option>\n");
 	} else {
 		// Fill in the organizations pulldown menu 
-		error_log ("Adding organization options");
+		$logger->info ("Adding organization options");
 		reset (Organization::$organizations);
 		foreach (Organization::$organizations as $org) {
-			error_log ("Adding organization option");
 			echo ("<option>" . $org->name . "</option>\n");
 		}
 	}

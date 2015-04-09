@@ -6,6 +6,8 @@
  *  All rights reserved by Brndbot, Ltd. 2014
  */
 
+require_once('bin/loggersetup.php');
+
 class XMLFile {
 
 const CREATED_STYLES_DIR = '/var/brndbot/styles/';
@@ -29,7 +31,8 @@ var $fileName;
 	  *  Windows.
 	  */
 	public function writeFile ($dir, $content) {
-		error_log("writeFile to " . $dir);
+		global $logger;
+		$logger->info("writeFile to " . $dir);
 		if (!isset($this->fileName)) {
 			throw new Exception ('Invalid file name.');
 		}
@@ -73,7 +76,6 @@ var $fileName;
 			$this->whiteOut($org) .
 			"/" .
 			$this->whiteOut($category);
-		error_log ("makeModelPath for " . $path);
 		if (!file_exists ($path)) 
 			mkdir($path);
 		return $path;

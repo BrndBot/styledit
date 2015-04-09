@@ -7,6 +7,7 @@
 
 require_once('bin/xmlfile.php');
 require_once('bin/orgdir.php');
+require_once('bin/loggersetup.php');
 
 session_start ();
 
@@ -29,7 +30,9 @@ function escapeTags ($xml) {
 }
 
 function buildFromForm () {
-	$styleatt .= " name=" . '"' . $_POST["stylename"] . '"';
+	global $logger;
+	$logger->info ("buildFromForm");
+	$styleatt = " name=" . '"' . $_POST["stylename"] . '"';
 	$content = buildHeadContent();
 	
 	// Loop through all style segments by counting up the suffix.
@@ -38,7 +41,7 @@ function buildFromForm () {
 	for ($suffix = 0; $suffix <= 99; $suffix++) {
 		$newSegment = buildSegment($suffix);
 		if ($newSegment) {
-			error_log ("newSegment = " . $newSegment);
+			$logger->info ("newSegment = " . $newSegment);
 			$content .= $newSegment;
 		}
 	}
@@ -311,6 +314,7 @@ function hCenterContent ($n) {
    exists or anything else goes wrong. On success it returns the file name. */
 function saveXML ($xml) {
 	global $g_org, $g_brand, $g_channel;
+	global $logger;
 	try {
 		$filename = $_POST["stylename"] . ".xml";
 		$xmlf = new XMLFile($filename);
@@ -322,7 +326,7 @@ function saveXML ($xml) {
 		return $filename;
 	}
 	catch (Exception $e) {
-		error_log($e->getMessage());
+		$logger->error($e->getMessage());
 		echo ("<p>Could not save the file. <br>");
 		echo ($e->getMessage() . "</p>");
 		return false;

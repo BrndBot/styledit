@@ -7,6 +7,8 @@
  */
 
 require_once('xmlfile.php');
+require_once('bin/loggersetup.php');
+
 
 /* This class encapsulates some functions relating to
    model files. */
@@ -19,7 +21,8 @@ var $modelName;
 var $organization;
  
 	public function __construct($fname) {
-		error_log ("ModelFile constructor, fname = " . $fname);
+		global $logger;
+		$logger->info ("ModelFile constructor, fname = " . $fname);
 		$this->fileName = $fname;
 	}
 	
@@ -31,7 +34,8 @@ var $organization;
 	
 	/* Load up the model information for the organization. */
 	public function loadModelInfo($org) {
-		error_log("getModelInfo, org = " . $org);
+		global $logger;
+		$logger->info("getModelInfo, org = " . $org);
 		if (!file_exists($this->fileName))
 			return null;
 
@@ -39,12 +43,14 @@ var $organization;
 		$this->styleTypes = array();
 		
 		$simpleXML = simplexml_load_file($this->fileName);
-		error_log ("returned from simplexml_load_file");
+		if (!$simpleXML) {
+			$logger->error ("Could not open model file " . $this->fileName);
+			return null;		
+		}
 		// The field elements are one level down
 		foreach ($simpleXML->children() as $elem) {
 			if ($elem->getName() == "field") {
 				foreach ($elem->attributes() as $attr => $val) {
-					error_log ("Field attribute: " . $attr . "   value = " . $val);
 					if ($attr == 'name')
 						$this->fieldNames[] = $val;
 				}
@@ -52,14 +58,11 @@ var $organization;
 				$this->styleTypes[] = trim(dom_import_simplexml($elem->type)->firstChild->data);
 			} else if ($elem->getName() == "org") {
 				$this->organization = trim(dom_import_simplexml($elem)->firstChild->data);
-				error_log ("Organization for model is " . $this->organization);
 			}
 		}
 		// Find the name attribute
 		foreach ($simpleXML->attributes() as $attr => $val) {
-			error_log ("Checking attribute " . $attr);
 			if ($attr == "name") {
-				error_log ("Model name is " . $val);
 				$this->modelName = $val;
 			}
 		}
@@ -86,9 +89,9 @@ var $organization;
  	/* If the model file specified by the arguments exists,
  	   returns a ModelFile. Otherwise returns null. */
  	public static function findModel ($model, $category, $org) {
- 		error_log("findModel, model = " . $model . "   org = " . $org);
+ 		global $logger;
+ 		$logger->info("findModel, model = " . $model . "   org = " . $org);
  		$path = XMLFile::CREATED_MODELS_DIR . $org . "/" . $category . "/" . $model . ".xml";
- 		error_log("path = " . $path);
  		if (file_exists($path))
  			return new ModelFile($path);
  		return null;

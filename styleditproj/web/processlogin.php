@@ -12,6 +12,7 @@
 require_once ('bin/supportfuncs.php');
 require_once ('bin/orgdir.php');
 require_once ('bin/fontfile.php');
+require_once ('bin/loggersetup.php');
 
 	
 try {
@@ -25,6 +26,10 @@ try {
 		$_SESSION['orgs'] = Organization::$organizations;
 		
 		readFontFile ("config/fonts.dat");
+		if (!FontFile::$fonts) {
+			http_respose_code(500);
+			return;
+		}
 		$_SESSION['fonts'] = FontFile::$fonts;
 		
 		// org, brand, and promo are not set on login
@@ -33,9 +38,9 @@ try {
 		return;
 	}
 } catch (Exception $e) {
-	error_log($e->getMessage());
+	$logger->info($e->getMessage());
 }
-error_log ("Login error for $userName");
+$logger->info ("Login error for $userName");
 header ("Location: login.php?error=1", true, 302);	// Should add an error message to login.php
 
 ?>

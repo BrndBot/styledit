@@ -5,6 +5,7 @@
  *  All rights reserved by Brndbot, Ltd. 2014
 */
 
+require_once('bin/loggersetup.php');
 
 /* This function removes most HTML tags from text while allowing
    some basic formatting.
@@ -19,11 +20,12 @@ function strip_unsafe_html_tags( $text )
 
 /* Dump a variable to the error log. */
 function dumpVar ($v) {
+	global $logger;
 	ob_start();
 	var_dump($v);
 	$contents = ob_get_contents();
 	ob_end_clean();
-	error_log($contents);
+	$logger->info($contents);
 }
 
 

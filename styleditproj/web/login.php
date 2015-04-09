@@ -9,6 +9,9 @@ header("Content-type: text/html; charset=utf-8");
 
 /* Start a fresh session */
 session_unset();
+
+date_default_timezone_set('America/New_York');
+
 ?>
 
 <html lang="en">

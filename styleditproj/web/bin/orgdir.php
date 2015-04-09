@@ -6,6 +6,8 @@
  *  
  *  All rights reserved by Brndbot, Ltd. 2015
  */
+
+require_once('bin/loggersetup.php');
  
  /* This replaces orgfile.php with code to read the models directory
     and construct the organization directory from that rather
@@ -78,10 +80,10 @@
 	   the organization's brand identities.
 	   The id of the div is brand-[orgname] */
 	public function insertBrandIdentities () {
+		global $logger;
 		echo ("<div id='brand-" . $this->name . "'>\n");
-//		reset($this->brandIdentities);
 		foreach ($this->brandIdentities as $brand) {
-			error_log ("Adding brand " . $brand);
+			$logger->info ("Adding brand " . $brand);
 			echo ("<option>" . $brand . "</option>\n"); 
 		}
 		echo ("</div>\n");
@@ -117,6 +119,7 @@
 	 *  the base directory (e.g., /var/brndbot), with a final slash.
  	 */
 	public static function readModelDir ($basePath) {
+		global $logger;
 		Organization::$organizations = array();
 		$modelsPath = $basePath . 'models/';
 		$dirArray = scandir($modelsPath);
@@ -146,7 +149,7 @@
  					$xmlPos = strpos($modelName, ".xml");
  					if ($xmlPos > 0) {
  						$modelName = substr($modelName, 0, $xmlPos);
- 						error_log ("Truncated model name is " . $modelName);
+ 						$logger->info ("Truncated model name is " . $modelName);
  						$cat->models[] = $modelName;
  					}
  				}
@@ -159,12 +162,15 @@
 	 * the styles directory, with a final slash.
 	 */
 	public function readStyleDir () {
-		error_log ("readStyleDir");
+		global $logger;
 		$dirArray = scandir($this->stylePath);
+		if (!$dirArray) {
+			$logger->error ("Cannot open directory " . $dirArray);
+			return;
+		}
 		foreach ($dirArray as $brand) {
 			if (substr ($brand, 0, 1) == '.')
 				continue;
-			error_log ("brand " . $brand);
 			$this->brandIdentities[] = $brand;
 		}
 	}
@@ -185,11 +191,12 @@
 	
 	/* Returns the category object with the matching name */
 	private function getCategoryByName ($catName) {
+		global $logger;
 		foreach ($this->categories as $category) {
 			if ($category->name == $catName)
 				return $category;
 		}
-		error_log ("No category matching " . $catName);
+		$logger->error ("No category matching " . $catName);
 		return $null;
 	}
 }
