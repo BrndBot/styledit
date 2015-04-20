@@ -8,6 +8,7 @@
  */
 
 require_once('bin/loggersetup.php');
+require_once('bin/supportfuncs.php');
  
  /* This replaces orgfile.php with code to read the models directory
     and construct the organization directory from that rather
@@ -105,13 +106,15 @@ require_once('bin/loggersetup.php');
 	 * named category.
 	 */
 	public function insertModels ($categoryName) {
+		global $logger;
 		$cat = $this->getCategoryByName ($categoryName);
 		// The div ID is model-orgname-catname
-		echo ("<div id='model-" . $this->name . "-" . $categoryName . "' class='hidden'>\n");
+		echo ("<div id='model-" . $this->name . "-" . spaceToUnderscore($categoryName) . "' class='hidden'>\n");
 		foreach ($cat->models as $model) {
 			echo ("<option>" . $model . "</option>\n");
 		}
 		echo ("</div>\n");
+		$logger->debug ("Returning from insertModels");
 	}
 
 	/*  Reads the file names in the organization's model directory to

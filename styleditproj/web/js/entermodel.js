@@ -4,8 +4,9 @@
  *  All rights reserved by Brndbot, Ltd. 2014
 */
 
-$(function () {
+$(document).ready(function () {
 	setSelectedOrg();
+	catSelectUpdate();
 });
 
 /* Use the hidden "selectedorg" div to set the initial value for the
@@ -44,4 +45,34 @@ function removeStyleType (buttn) {
 	if (table.find(".styletypetr").length > 1)
 		trow.remove();
 	
+}
+
+/* In the model selection form, populate the categories pulldown menu
+based on the selected organization. */
+function catSelectUpdate () {
+	// Get the set of options which is appropriate for the organization
+	// from a hidden div.
+	var orgid = 'cat-' + $('#orgname').val();
+	console.log ("catSelectUpdate orgid = " + orgid);
+	var catdiv = $('#orgcategories').find('#' + orgid);
+	$('#category').empty();
+	$('#category').append(catdiv.find("option").clone());
+	
+	modelSelectUpdate();
+}
+
+/* In the model selection form, populate the models pulldown menu
+* based on the selected organization and category. */
+function modelSelectUpdate() {
+	console.log ("modelSelectUpdate");
+	var orgcatid = 'model-' + $('#orgname').val() + '-' + $('#category').val();
+	// Turn spaces into underscores, so we have a legitimate HTML attribute
+	orgcatid = orgcatid.replace (" ", "_");
+	var modeldiv = $('#orgmodels').find("#" + orgcatid);
+	$('#model').empty();
+	$('#model').append(modeldiv.find("option").clone());
+	// See if there is a selected model
+	if ($('#modelName').length > 0) {
+		selectIfExists ($('#model'), $('#modelName').val());
+	}
 }

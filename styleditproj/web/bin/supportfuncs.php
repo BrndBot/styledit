@@ -17,6 +17,12 @@ function strip_unsafe_html_tags( $text )
     return strip_tags( $text, "<p><b><i><em><strong><a><br>");
 }
 
+/* Replace spaces in a string with tildes. Needed when a category or model name
+   is used in an HTML ID or other attribute. */
+function spaceToUnderscore ($s) {
+	return str_replace (array(" "), "_", $s);
+}
+
 
 /* Dump a variable to the error log. */
 function dumpVar ($v) {

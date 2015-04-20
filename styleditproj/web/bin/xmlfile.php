@@ -57,10 +57,10 @@ var $fileName;
 	/* Create directory path for a style. Returns the path without a slash at the end. */
 	public function makeStylePath ($org, $brand) {
 		// May need to create parent directories
-		$path = XMLFile::CREATED_STYLES_DIR . $this->whiteOut($org);
+		$path = XMLFile::CREATED_STYLES_DIR . $org;
 		if (!file_exists ($path)) 
 			mkdir($path);
-		$path .= "/" . $this->whiteOut($brand);
+		$path .= "/" . $brand;
 		if (!file_exists ($path)) 
 			mkdir($path);
 //		$path .= "/" . $this->whiteOut($promo);
@@ -73,9 +73,7 @@ var $fileName;
 	public function makeModelPath ($org, $category) {
 		// May need to create parent directory
 		$path = XMLFile::CREATED_MODELS_DIR . 
-			$this->whiteOut($org) .
-			"/" .
-			$this->whiteOut($category);
+			$org . "/" . $category;
 		if (!file_exists ($path)) 
 			mkdir($path);
 		return $path;
@@ -83,9 +81,9 @@ var $fileName;
 	
 	/* Remove all white space from a name, so it makes a more friendly
        ID and directory name */
-	private function whiteOut ($s) {
-		return preg_replace('/\s+/', '', $s);
-	}
+//	private function whiteOut ($s) {
+//		return preg_replace('/\s+/', '', $s);
+//	}
 	
 	
 	

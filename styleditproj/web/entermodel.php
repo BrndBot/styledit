@@ -42,7 +42,7 @@ $logger->info("entermodel.php");
 <table>
 <tr><td>Organization:</td>
 <td>
-	<select name="orgname" id="orgname" >
+	<select name="orgname" id="orgname" onchange="catSelectUpdate();">
 <?php
 	/* Fill in the organizations pulldown menu */ 
 	reset (Organization::$organizations);
@@ -59,7 +59,7 @@ Model name:</td> <td><input id="modelname" class="textbox" type="text" name="mod
 Description:</td> <td><input id="description" class="textbox" type="text" name="description" required>
 </td></tr>
 <tr><td>
-Category:</td> <td><input id="category" class="textbox" type="text" name="category" required>
+Category:</td> <td><select id="category" name="category" required></select>
 </td></tr>
 </table>
 
@@ -99,6 +99,28 @@ Category:</td> <td><input id="category" class="textbox" type="text" name="catego
 			"</div>\n");
 	} 
 ?>
+
+<div id="orgcategories" class="hidden">
+<?php
+	/* Build a set of divs which contain the model file names
+	   for each organization and category */
+	reset (Organization::$organizations);
+	foreach (Organization::$organizations as $org) {
+		$org->insertCategories();
+	}
+?>
+</div>
+
+<div id="promobank" class="hidden">
+<?php
+	/* Build a set of divs which contain the promotion (category) menu options
+	   for each organization */
+	reset (Organization::$organizations);
+	foreach (Organization::$organizations as $org) {
+		$org->insertCategories();
+	}
+?>
+</div>
 
 <!-- Put scripts at end for faster load -->
 

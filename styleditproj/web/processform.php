@@ -74,9 +74,9 @@ function buildHeadContent() {
 
 /* Remove all white space from a name, so it makes a more friendly
    ID and directory name */
-function whiteOut ($s) {
-	return preg_replace('/\s+/', '', $s);
-}
+//function whiteOut ($s) {
+//	return preg_replace('/\s+/', '', $s);
+//}
 
 /* Need to grab stuff from this to put into a loop for each style segment */
 function buildSegment ($n) {
