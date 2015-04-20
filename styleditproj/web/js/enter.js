@@ -246,18 +246,18 @@ function updateOrgBasedSels() {
 	// Now same for models. Need to get them under all categories,
 	// so we look at all children of #orgmodels whose ID starts with
 	// 'model-Orgname'.
-	var modeldivs = $('#orgmodels > div');
-	var ourdivs = $([]);
-	var modelPrefix = 'model-' + org;
-	$('#model').empty();
-	modeldivs.each (function () {
+//	var modeldivs = $('#orgmodels > div');
+//	var ourdivs = $([]);
+//	var modelPrefix = 'model-' + org;
+//	$('#model').empty();
+//	modeldivs.each (function () {
 		// Retain only matching IDs
-		var modeldiv = $(this);
-		var modeldivid = modeldiv.attr("id");
-		if (modeldivid.indexOf(modelPrefix) == 0) {
-			$('#model').append (modeldiv.find("option").clone());
-		}
-	});
+//		var modeldiv = $(this);
+//		var modeldivid = modeldiv.attr("id");
+//		if (modeldivid.indexOf(modelPrefix) == 0) {
+//			$('#model').append (modeldiv.find("option").clone());
+//		}
+//	});
 	
 	// Now set to the saved values, if available
 	savedbrand = $('#selectedbrand');
@@ -352,7 +352,7 @@ function modelSelectUpdate() {
 	$('#mmodel').empty();
 	$('#mmodel').append(modeldiv.find("option").clone());
 	// See if there is a selected model
-	if ($('#modelName').length > 0) {
-		selectIfExists ($('#model'), $('#modelName').val());
-	}
+//	if ($('#modelName').length > 0) {
+//		selectIfExists ($('#model'), $('#modelName').val());
+//	}
 }

@@ -75,15 +75,19 @@ if ($modelparm && $categoryparm && $orgparm) {
 function fillOrgOptions ($canLimit) {
 	global $modelFile;
 	global $logger;
+	global $orgparm;
 	if ($canLimit && isset ($modelFile)) {
 		// Fill in only the organization for the selected model
-		echo ("<option>" . $modelFile->organization . "</option>\n");
+		echo ("<option selected>" . $modelFile->organization . "</option>\n");
 	} else {
 		// Fill in the organizations pulldown menu 
 		$logger->info ("Adding organization options");
 		reset (Organization::$organizations);
 		foreach (Organization::$organizations as $org) {
-			echo ("<option>" . $org->name . "</option>\n");
+		$sel = "";
+		if ($org->name == $orgparm)
+			$sel = " selected ";
+			echo ("<option" . $sel . ">" . $org->name . "</option>\n");
 		}
 	}
 }
@@ -140,11 +144,6 @@ if (isset ($modelFile)) {
 <tr><td>Brand identity:</td>
 <td>
 	<select name="brand" id="brand">
-	</select>
-</td></tr>
-<tr><td>Model:</td>
-<td>
-	<select name="model" id="model">
 	</select>
 </td></tr>
 <tr><td>Channel:</td>
