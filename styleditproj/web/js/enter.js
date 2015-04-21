@@ -1,7 +1,7 @@
 /*	enter.js
  *  CONFIDENTIAL
  *  
- *  All rights reserved by Brndbot, Ltd. 2014
+ *  All rights reserved by Brndbot, Ltd. 2015
 */
 
 var styleTemplateDiv;
@@ -11,6 +11,8 @@ var imageInfoDiv;
 var logoInfoDiv;
 var blockInfoDiv;
 var mainForm;
+var selectedCategory;
+var selectedModel;
 
 /* An aid to debugging. Remove in the final version. */
 window.onerror = function(msg, url, line, col, error) {
@@ -28,7 +30,7 @@ window.onerror = function(msg, url, line, col, error) {
    return suppressErrorAlert;
 };
 
-/* This is done when the page is loaded. */
+/* This is done when the page is loaded. (Shortcut for document ready) */
 $(function () {
 	// Set variables for the style bank blocks, so we
 	// only have to point at them once.
@@ -39,6 +41,8 @@ $(function () {
 	logoInfoDiv = $('#formbank .logoinfo');
 	blockInfoDiv = $('#formbank .blockinfo');
 	mainForm = $('#mainform');
+	selectedCategory = $('#selectedcategory').text();
+	selectedModel = $('#selectedmodel').text();
 	addFirstStyle();
 	setSelectedOrg();
 	updateOrgBasedSels();
@@ -194,7 +198,7 @@ function suffixName (nam, n) {
 	}
 	var hyphenIdx = nam.indexOf("-");
 	if (hyphenIdx > 0)
-		nam = nam.substr(0, hyphenIdx) 
+		nam = nam.substr(0, hyphenIdx); 
 	var val = nam + '-' + n;
 	// Now put the brackets back if they were removed
 	if (isArray) {
@@ -264,9 +268,9 @@ function updateOrgBasedSels() {
 	if (savedbrand.length > 0) {
 		selectIfExists($('#brand'), savedbrand.text());
 	}
-	savedpromo = $('#selectedpromo');
-	if (savedpromo.length > 0) {
-		selectIfExists($('#promo'), savedpromo.text());
+	savedcategory = $('#selectedcategory');
+	if (savedcategory.length > 0) {
+		selectIfExists($('#promo'), savedcategory.text());
 	}
 }
 
@@ -338,8 +342,12 @@ function catSelectUpdate () {
 	$('#mcategory').empty();
 	$('#mcategory').append(catdiv.find("option").clone());
 	
+	// If there's a selected category, select it.
+	selectIfExists ($('#mcategory'), selectedCategory);
+	
 	modelSelectUpdate();
 }
+
 
 /* In the model selection form, populate the models pulldown menu
  * based on the selected organization and category. */
@@ -347,7 +355,7 @@ function modelSelectUpdate() {
 	console.log ("modelSelectUpdate");
 	var orgcatid = 'model-' + $('#morgname').val() + '-' + $('#mcategory').val();
 	// Turn spaces into underscores, so we have a legitimate HTML attribute
-	orgcatid = orgcatid.replace (" ", "_");
+	orgcatid = orgcatid.replace (/ /g, "_");
 	var modeldiv = $('#orgmodels').find("#" + orgcatid);
 	$('#mmodel').empty();
 	$('#mmodel').append(modeldiv.find("option").clone());

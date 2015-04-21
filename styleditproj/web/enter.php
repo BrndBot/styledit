@@ -40,10 +40,12 @@ if (array_key_exists("model", $_GET))
 $categoryparm = null;
 if (array_key_exists("category", $_GET))
 	$categoryparm = $_GET["category"];
+	Organization::$selectedCategory = $categoryparm;		// keep Organization static vars in sync
 $orgparm = null;
-if (array_key_exists("org", $_GET))
+if (array_key_exists("org", $_GET)) {
 	$orgparm = $_GET["org"];
-
+	Organization::$selectedOrg = $orgparm;		// keep Organization static vars in sync
+}
 $modelFile = null;
 
 
@@ -515,7 +517,7 @@ if (isset ($modelFile)) {
 			"</div>\n");
 	} 
 	if (isset(Organization::$selectedCategory)) {
-		echo("<div class=\"hidden\" id=\"selectedpromo\">" .
+		echo("<div class=\"hidden\" id=\"selectedcategory\">" .
 			Organization::$selectedCategory .
 			"</div>\n");
 	} 
