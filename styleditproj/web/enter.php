@@ -151,6 +151,7 @@ if (isset ($modelFile)) {
 	<select multiple name="channel" id="channel">
 		<option>Twitter</option>
 		<option>Facebook</option>
+		<option>Print</option>
 	</select>
 </td></tr>
 <tr><td>
@@ -495,7 +496,6 @@ if (isset ($modelFile)) {
 	reset (Organization::$organizations);
 	foreach (Organization::$organizations as $org) {
 		foreach ($org->categories as $cat) {
-			$logger->info ("calling insertModels on " . $cat->name);
 			$org->insertModels($cat->name);
 		}
 	}

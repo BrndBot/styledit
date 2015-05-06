@@ -135,6 +135,7 @@ require_once('bin/supportfuncs.php');
  			// Now find the categories for the organization
  			$catArray = scandir ($org->modelPath);
  			foreach ($catArray as $catName) {
+ 				$logger->info ("catName is " . $catName);
  				if (substr($catName, 0, 1) == '.')
  					continue;
 				if (strpos(strtolower($catName), '.png') > 0 ||
@@ -147,7 +148,9 @@ require_once('bin/supportfuncs.php');
 	 			
 	 			// Now get the models
 	 			$modelArray = scandir ($catPath);
+	 			$logger->info("Scanned model directory for " . $catPath);
  				foreach ($modelArray as $modelName) {
+ 					$logger->info ("modelName is " . $modelName);
  					// Strip off '.xml' and ignore non-XML files
  					$xmlPos = strpos($modelName, ".xml");
  					if ($xmlPos > 0) {

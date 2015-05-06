@@ -347,7 +347,7 @@ function modelSelectUpdate() {
 	console.log ("modelSelectUpdate");
 	var orgcatid = 'model-' + $('#morgname').val() + '-' + $('#mcategory').val();
 	// Turn spaces into underscores, so we have a legitimate HTML attribute
-	orgcatid = orgcatid.replace (" ", "_");
+	orgcatid = orgcatid.replace (/ /g, "_");
 	var modeldiv = $('#orgmodels').find("#" + orgcatid);
 	$('#mmodel').empty();
 	$('#mmodel').append(modeldiv.find("option").clone());
